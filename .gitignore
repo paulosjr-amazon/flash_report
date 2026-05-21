@@ -1,0 +1,6 @@
+flash-report-app/frontend/node_modules/
+flash-report-app/backend/__pycache__/
+*.pyc
+.env
+flash_report_sample.csv
+manual_input.csv

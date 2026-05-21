@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//etc/devspace/**)",
+      "Bash(mkdir -p /home/paulosjr/.workspace/flash-report-app/backend /home/paulosjr/.workspace/flash-report-app/frontend/src /home/paulosjr/.workspace/flash-report-app/frontend/public)",
+      "Bash(chmod +x /home/paulosjr/.workspace/flash-report-app/start.sh)",
+      "Bash(pip install *)",
+      "Bash(pkill -f \"uvicorn main:app\")",
+      "Bash(uvicorn main:app --host 0.0.0.0 --port 8000)",
+      "Bash(curl -sf http://localhost:8000/api/week)",
+      "Bash(curl -sf http://localhost:8000/api/sites)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(f'Sites: {len\\(d[\\\\\"sites\\\\\"]\\)}'\\)\")",
+      "Bash(python3 -c \"from main import app; print\\('OK'\\)\")",
+      "Bash(echo \"PID: $!\")",
+      "Bash(curl -s http://localhost:8000/api/week)",
+      "Bash(npm --version)",
+      "Bash(npm install *)",
+      "Bash(BROWSER=none nohup npm start > /tmp/frontend.log 2>&1 & *)",
+      "Bash(curl -sf http://localhost:3000 -o /dev/null -w \"%{http_code}\")",
+      "Bash(curl -s -X POST http://localhost:8000/api/submit -H 'Content-Type: application/json' -d '{\"site\":\"GRU5\",\"week\":\"2026-W21\",\"success_story\":\"Teste de sucesso\",\"tip\":\"Dica de teste\"}')",
+      "Bash(python3 -m json.tool)",
+      "Read(//workspace/**)",
+      "Bash(curl -s \"http://localhost:8000/api/entries?week=2026-W21\")",
+      "Bash(pkill -f \"react-scripts start\")",
+      "Bash(echo \"Backend PID: $!\")",
+      "Bash(BROWSER=none nohup npm start)",
+      "Bash(echo \"Frontend PID: $!\")"
+    ]
+  }
+}

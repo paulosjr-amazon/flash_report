@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Upload Logo</title>
+<style>
+body{font-family:Inter,sans-serif;background:#f2f2f2;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}
+.box{background:#fff;border-radius:18px;box-shadow:0 2px 16px rgba(0,0,0,0.07);padding:2.5rem 3rem;max-width:420px;width:100%;text-align:center}
+h2{font-size:1.1rem;font-weight:700;margin-bottom:.5rem;color:#1a1a1a}
+p{font-size:.82rem;color:#777;margin-bottom:1.5rem}
+.drop{border:2px dashed #d4e8d5;border-radius:12px;padding:2rem;cursor:pointer;transition:background .15s;margin-bottom:1rem}
+.drop:hover{background:#edf5ee}
+.drop input{display:none}
+.drop label{cursor:pointer;font-size:.85rem;color:#4CAF50;font-weight:600}
+.drop .hint{font-size:.72rem;color:#aaa;margin-top:.4rem}
+button{background:#1c6b3a;color:#fff;border:none;border-radius:999px;padding:.6rem 2rem;font-weight:700;font-size:.9rem;cursor:pointer;width:100%}
+button:disabled{opacity:.5;cursor:not-allowed}
+.slot-btn{flex:1;background:#f0f2f4;color:#555;border:1px solid #dde2e7;border-radius:8px;padding:.45rem .5rem;font-size:.75rem;font-weight:600;cursor:pointer}
+.slot-btn.active{background:#1c6b3a;color:#fff;border-color:#1c6b3a}
+.msg{margin-top:1rem;font-size:.82rem;padding:.6rem 1rem;border-radius:8px;display:none}
+.msg.ok{background:#edf5ee;color:#1c6b3a;display:block}
+.msg.err{background:#fde8e8;color:#c62828;display:block}
+img#preview{max-width:180px;max-height:80px;margin:.75rem auto;display:none;border-radius:8px}
+</style>
+</head>
+<body>
+<div class="box">
+  <h2>Upload de Logos</h2>
+  <p>Selecione o slot e o arquivo. PNG, JPG, SVG ou WEBP.</p>
+
+  <div style="display:flex;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap">
+    <button type="button" class="slot-btn active" id="slot-header" onclick="setSlot('header-logo')">Logo Header (esq.)</button>
+    <button type="button" class="slot-btn" id="slot-safetogo" onclick="setSlot('safetogo-logo')">Safe to Go</button>
+    <button type="button" class="slot-btn" id="slot-amazon" onclick="setSlot('amazon-logo')">Amazon</button>
+  </div>
+  <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap">
+    <button type="button" class="slot-btn" id="slot-card-brazil" onclick="setSlot('card-brazil-bg')">Card — Brazil Operations</button>
+    <button type="button" class="slot-btn" id="slot-card-others" onclick="setSlot('card-others-bg')">Card — Demais colunas</button>
+  </div>
+
+  <div class="drop" onclick="document.getElementById('file').click()">
+    <input type="file" id="file" accept=".png,.jpg,.jpeg,.svg,.webp" onchange="previewFile(this)">
+    <label>Clique para selecionar o arquivo</label>
+    <div class="hint">PNG · JPG · SVG · WEBP</div>
+  </div>
+  <img id="preview" alt="preview">
+  <button id="btn" onclick="upload()" disabled>Fazer Upload</button>
+  <div class="msg" id="msg"></div>
+</div>
+<script>
+let currentSlot = 'header-logo';
+function setSlot(slot){
+  currentSlot = slot;
+  document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('active'));
+  const map = {
+    'header-logo':'slot-header','safetogo-logo':'slot-safetogo','amazon-logo':'slot-amazon',
+    'card-brazil-bg':'slot-card-brazil','card-others-bg':'slot-card-others'
+  };
+  const el = document.getElementById(map[slot]);
+  if(el) el.classList.add('active');
+}
+function previewFile(input){
+  const file = input.files[0];
+  if(!file) return;
+  document.getElementById('btn').disabled = false;
+  if(file.type !== 'image/svg+xml'){
+    const reader = new FileReader();
+    reader.onload = e => { const img = document.getElementById('preview'); img.src=e.target.result; img.style.display='block'; };
+    reader.readAsDataURL(file);
+  }
+}
+async function upload(){
+  const file = document.getElementById('file').files[0];
+  if(!file) return;
+  const btn = document.getElementById('btn');
+  const msg = document.getElementById('msg');
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+  msg.className = 'msg';
+  const form = new FormData();
+  form.append('file', file);
+  form.append('slot', currentSlot);
+  try{
+    const apiBase = window.location.origin.replace(/--\d+\./, '--8000.');
+    const res = await fetch(apiBase + '/api/upload/logo', {method:'POST', body:form});
+    const data = await res.json();
+    if(res.ok){
+      msg.className='msg ok';
+      msg.textContent='✓ ' + currentSlot + ' enviada! Atualize o Flash Report para ver.';
+    } else {
+      msg.className='msg err';
+      msg.textContent='Erro: ' + (data.detail || 'falha no upload');
+    }
+  } catch(e){
+    msg.className='msg err';
+    msg.textContent='Erro de rede. Tente novamente.';
+  }
+  btn.disabled = false;
+  btn.textContent = 'Fazer Upload';
+}
+</script>
+</body>
+</html>

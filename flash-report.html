@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flash Report — WHS Brazil</title>
+<style>
+@font-face{font-family:'Amazon Ember';src:local('Amazon Ember Display Heavy');font-weight:900}
+@font-face{font-family:'Amazon Ember';src:local('Amazon Ember');font-weight:400}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;900&display=swap');
+
+:root{
+    --green:#4CAF50;
+    --green-light:#edf5ee;
+    --green-border:#d4e8d5;
+    --bg:#f2f2f2;
+    --surface:#ffffff;
+    --dark1:#15181c;
+    --dark2:#1f2328;
+    --dark3:#2e3136;
+    --text:#1a1a1a;
+    --text-sec:#777;
+    --radius:18px;
+    --shadow:0 2px 16px rgba(0,0,0,0.05);
+    --whs-green:#9bd27b;
+    --whs-green-soft:#b9ddb8;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+    font-family:'Amazon Ember','Inter',-apple-system,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.8;
+    font-size:14px;
+    padding:2rem;
+}
+
+.report{max-width:920px;margin:0 auto}
+
+.page{
+    background:var(--surface);
+    border-radius:24px;
+    box-shadow:var(--shadow);
+    margin-bottom:2.5rem;
+    overflow:hidden;
+    min-height:1300px;
+    position:relative;
+    padding-bottom:4rem;
+}
+
+.page-subheader{
+    padding:.6rem 2.5rem;
+    font-size:.72rem;font-weight:200;color:#999;
+    border-bottom:1px solid #eee;letter-spacing:.01em;
+    display:flex;justify-content:space-between;align-items:center;
+}
+.page-subheader .sub-right{font-size:.65rem;color:#bbb;font-weight:300}
+
+.header{
+    background:linear-gradient(135deg,var(--dark1) 0%,var(--dark2) 40%,var(--dark3) 100%);
+    padding:1.75rem 2.5rem;display:flex;align-items:center;
+    justify-content:space-between;min-height:130px;
+}
+.header-left{display:flex;align-items:center;gap:1.25rem}
+.header-shield{
+    height:64px;max-width:180px;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.header-shield img{height:64px;max-width:180px;object-fit:contain;}
+.header-text{display:flex;flex-direction:column}
+.header-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.2em;color:rgba(255,255,255,0.5);font-weight:500;line-height:1.4}
+.header-title{font-size:1.8rem;font-weight:900;color:#fff;letter-spacing:-0.02em;font-family:'Amazon Ember','Inter',sans-serif;line-height:1.2}
+.header-sub{font-size:.68rem;color:rgba(255,255,255,0.3);margin-top:.25rem}
+.header-right{display:flex;align-items:center;gap:1.5rem}
+.header-badge{
+    display:flex;align-items:center;justify-content:center;
+}
+.header-badge img{height:28px;max-width:100px;object-fit:contain;display:block}
+
+.page-body{padding:2rem 0;position:relative;min-height:1100px}
+.page-body::before{
+    content:'1\A 2\A 3\A 4\A 5\A 6\A 7\A 8\A 9\A 10\A 11\A 12\A 13\A 14\A 15\A 16\A 17\A 18\A 19\A 20\A 21\A 22\A 23\A 24\A 25\A 26\A 27\A 28\A 29\A 30\A 31\A 32\A 33\A 34\A 35\A 36\A 37\A 38\A 39\A 40\A 41\A 42\A 43\A 44\A 45\A 46\A 47\A 48\A 49\A 50';
+    white-space:pre;position:absolute;left:-8px;top:2rem;
+    width:2rem;text-align:right;font-size:.6rem;line-height:1.85em;
+    color:#aaa;font-variant-numeric:tabular-nums;user-select:none;padding-right:.4rem;
+}
+.page-body::after{
+    content:'';position:absolute;left:calc(2.3rem - 8px);
+    top:1.5rem;bottom:1.5rem;width:1px;background:#eee;
+}
+.page-content{margin-left:4.5rem;margin-right:2.5rem;position:relative}
+.page-content>*+*{margin-top:1rem}
+.page-content>.spacer{margin-top:2rem}
+
+.pill{
+    display:inline-block;
+    background:linear-gradient(135deg,#3a3a3a,#4a4a4a);
+    color:#fff;font-size:.78rem;font-weight:600;
+    padding:.45rem 1.3rem;border-radius:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);margin-bottom:12px;
+}
+
+.snapshot-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+
+.snap-card{border-radius:var(--radius);overflow:hidden;border:1px solid var(--green-border);box-shadow:var(--shadow);margin-bottom:1rem}
+.snap-header{
+    background:linear-gradient(135deg,#1c6b3a,#2e9b5a);
+    padding:.75rem 1.25rem;display:flex;align-items:center;gap:.75rem;
+}
+.snap-icon{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0}
+.snap-title{color:#fff;font-weight:700;font-size:.82rem;letter-spacing:.02em}
+.snap-body{background:var(--green-light);padding:.9rem 1.25rem;font-size:.8rem;color:#555;line-height:1.75;min-height:54px}
+
+.dfy-top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
+.dfy-card{
+    background:var(--surface);border:1px solid var(--green-border);
+    border-radius:14px;box-shadow:var(--shadow);
+    padding:1rem 1.25rem;margin-bottom:.75rem;border-left-width:4px;
+}
+.dfy-card:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,0.07)}
+.dfy-meta{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;margin-bottom:.6rem}
+.dfy-type{display:inline-block;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:.2rem .7rem;border-radius:999px}
+.dfy-site{font-weight:800;font-size:.95rem;color:var(--text)}
+.dfy-dot{font-size:.7rem;color:#ddd}
+.dfy-login{font-size:.72rem;color:var(--text-sec)}
+.dfy-obs{font-size:.72rem;color:#2e9b5a;font-weight:700}
+.dfy-date{font-size:.65rem;color:#bbb;margin-left:auto;white-space:nowrap}
+.dfy-body{font-size:.78rem;color:#555;line-height:1.7;border-top:1px solid #eee;padding-top:.6rem}
+
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem}
+.col-head{
+    font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;
+    color:#fff;text-align:center;padding:.5rem .8rem;border-radius:999px;margin-bottom:.75rem;
+}
+.col-head.hl{background:linear-gradient(135deg,#1c6b3a,#2e9b5a)}
+.col-head.dk{background:linear-gradient(135deg,#3a3a3a,#4a4a4a)}
+
+
+
+/* WHS Card — demais colunas (outline) */
+.metric-card{
+    border-radius:12px;
+    padding:.85rem 1rem;margin-bottom:.7rem;
+    box-shadow:var(--shadow);
+    background:#fff;
+    border:2px solid #9bd27b;
+    position:relative;
+    overflow:hidden;
+    clip-path:polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+}
+/* WHS Card — Brazil Operations (filled) */
+.metrics-col.hl .metric-card{
+    background:linear-gradient(120deg,#a8d872 0%,#b9dfbb 100%);
+    border:none;
+}
+.metrics-col.hl .metric-card::after{
+    content:"✓";
+    position:absolute;right:-2%;top:50%;
+    transform:translateY(-50%) rotate(-8deg);
+    font-size:90px;font-weight:900;line-height:1;
+    color:rgba(120,185,95,0.18);pointer-events:none;
+}
+.metric-lbl{font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text-sec);margin-bottom:.5rem;line-height:1.3}
+.metric-row{display:flex;align-items:flex-end;justify-content:space-between}
+.metric-wk{font-size:1.6rem;font-weight:800;line-height:1;color:var(--text)}
+.metrics-col.hl .metric-wk{color:#1c6b3a}
+.metric-ytd{text-align:right}
+.metric-ytd-lbl{font-size:.56rem;font-weight:600;text-transform:uppercase;color:#bbb;letter-spacing:.04em}
+.metric-ytd-val{font-size:.88rem;font-weight:700;color:var(--text-sec)}
+
+.footer{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:1rem 2.5rem;border-top:1px solid #eee;
+    position:absolute;bottom:0;left:0;right:0;flex-wrap:wrap;gap:.75rem;
+}
+.footer-left{display:flex;align-items:center;gap:.75rem}
+.footer-icon{width:36px;height:36px;border-radius:8px;background:rgba(76,175,80,0.1);display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.footer-brand{font-size:.72rem;font-weight:700;color:var(--text)}
+.footer-tagline{font-size:.65rem;color:var(--green);font-weight:600;letter-spacing:.04em;margin-top:.1rem}
+.footer-cta{display:flex;align-items:center;gap:.75rem}
+.footer-cta-txt{font-size:.75rem;color:#999;font-style:italic}
+.footer-go{background:#1c6b3a;color:#fff;border:2px solid #2e9b5a;border-radius:999px;padding:.3rem 1.1rem;font-weight:800;font-size:.8rem;cursor:pointer;letter-spacing:.04em;font-family:'Amazon Ember','Inter',sans-serif}
+.page-num{font-size:.7rem;color:#aaa;font-weight:500;letter-spacing:.03em}
+
+@media print{
+    body{padding:0;background:#fff}
+    .page{box-shadow:none;border-radius:0;margin-bottom:0;page-break-after:always}
+}
+</style>
+</head>
+<body>
+<div class="report">
+
+<!-- ═══════ PAGE 1 — SNAPSHOT ═══════ -->
+<div class="page">
+  <div class="header">
+    <div class="header-left">
+      <div class="header-shield">
+        <img src="https://ds-72b6wb5v--8000.us-east-1.prod.proxy.devspaces.amazon.dev/assets/header-logo.png" alt="WHS Brazil">
+      </div>
+      <div class="header-text">
+        <span class="header-label">WHS Brazil</span>
+        <span class="header-title">Flash Report</span>
+        <span class="header-sub">Week 2026-W21 · May 19–25, 2026</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="header-badge">
+        <img src="https://ds-72b6wb5v--8000.us-east-1.prod.proxy.devspaces.amazon.dev/assets/safetogo-logo.png" alt="Safe to Go" style="height:38px;max-width:140px;position:relative;top:-8px">
+      </div>
+      <div class="header-badge">
+        <img src="https://ds-72b6wb5v--8000.us-east-1.prod.proxy.devspaces.amazon.dev/assets/amazon-logo.png" alt="Amazon">
+      </div>
+    </div>
+  </div>
+
+  <div class="page-body"><div class="page-content">
+    <span class="pill">Snapshot</span>
+
+    <div class="snapshot-grid">
+
+      <!-- LEFT -->
+      <div>
+        <div class="snap-card">
+          <div class="snap-header"><div class="snap-icon">💡</div><span class="snap-title">Did You Know?</span></div>
+          <div class="snap-body">In 2025, proactive near-miss reporting in Brazil Operations increased by <strong>34%</strong>, directly contributing to a <strong>12% reduction in recordable incidents</strong>. Every observation counts — submit yours on Dragonfly today.</div>
+        </div>
+        <div class="snap-card">
+          <div class="snap-header"><div class="snap-icon">🏆</div><span class="snap-title">Success Stories</span></div>
+          <div class="snap-body"><strong>GRU5</strong> — Team reduced near-miss incidents by 40% after implementing new pedestrian barriers near dock doors, driven by associate-led Dragonfly observations this week.</div>
+        </div>
+        <div class="snap-card">
+          <div class="snap-header"><div class="snap-icon">🚩</div><span class="snap-title">Hot Flag</span></div>
+          <div class="snap-body"><strong style="color:#c62828">PIT-Pedestrian conflicts</strong> — 3 events across FC sites this week. Refresher training recommended for dock associates. Escalated to site EHS leads.</div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Best Dragonfly -->
+      <div>
+        <div class="dfy-top-row">
+          <span class="pill" style="margin-bottom:0">🐉 Best Dragonfly</span>
+          <span style="font-size:.7rem;color:#bbb">Top observations · W21</span>
+        </div>
+
+        <div class="dfy-card" style="border-left-color:#1c6b3a">
+          <div class="dfy-meta">
+            <span class="dfy-type" style="background:#1c6b3a;color:#fff">Fulfillment Center</span>
+            <span class="dfy-site">GRU5</span><span class="dfy-dot">·</span>
+            <span class="dfy-login">@jsilva</span><span class="dfy-dot">·</span>
+            <span class="dfy-obs">✍️ 8 obs.</span>
+            <span class="dfy-date">May 19</span>
+          </div>
+          <div class="dfy-body">Proactively identified hydraulic fluid leak on forklift during pre-trip inspection, preventing equipment failure and potential injury before shift start.</div>
+        </div>
+
+        <div class="dfy-card" style="border-left-color:#1c6b3a">
+          <div class="dfy-meta">
+            <span class="dfy-type" style="background:#1c6b3a;color:#fff">Fulfillment Center</span>
+            <span class="dfy-site">CNF1</span><span class="dfy-dot">·</span>
+            <span class="dfy-login">@mferreira</span><span class="dfy-dot">·</span>
+            <span class="dfy-obs">✍️ 5 obs.</span>
+            <span class="dfy-date">May 18</span>
+          </div>
+          <div class="dfy-body">Reported missing floor marking near conveyor belt, preventing pedestrian-PIT conflict. Marking restored within 2 hours of observation.</div>
+        </div>
+
+        <div class="dfy-card" style="border-left-color:#1565c0">
+          <div class="dfy-meta">
+            <span class="dfy-type" style="background:#1565c0;color:#fff">Sort Center</span>
+            <span class="dfy-site">CGH3</span><span class="dfy-dot">·</span>
+            <span class="dfy-login">@rcoelho</span><span class="dfy-dot">·</span>
+            <span class="dfy-obs">✍️ 3 obs.</span>
+            <span class="dfy-date">May 20</span>
+          </div>
+          <div class="dfy-body">Identified broken dock leveler latch and raised emergency work order, avoiding potential fall-from-height event during unload operations.</div>
+        </div>
+
+        <div class="dfy-card" style="border-left-color:#6f42c1">
+          <div class="dfy-meta">
+            <span class="dfy-type" style="background:#6f42c1;color:#fff">Logistics</span>
+            <span class="dfy-site">DSP3</span><span class="dfy-dot">·</span>
+            <span class="dfy-login">@abarros</span><span class="dfy-dot">·</span>
+            <span class="dfy-obs">✍️ 11 obs.</span>
+            <span class="dfy-date">May 17</span>
+          </div>
+          <div class="dfy-body">Spotted improperly secured cargo in yard truck before road transport, eliminating road safety risk before departure.</div>
+        </div>
+      </div>
+
+    </div>
+  </div></div>
+
+  <div class="footer">
+    <div class="footer-left">
+      <div class="footer-icon">🛡️</div>
+      <div><div class="footer-brand">WHS — Workplace Health &amp; Safety</div><div class="footer-tagline">Engage · Enable · Inspire</div></div>
+    </div>
+    <div class="footer-cta">
+      <span class="footer-cta-txt">Have you done your deep dive today?</span>
+      <button class="footer-go">Go!</button>
+    </div>
+    <span class="page-num">1 / 2</span>
+  </div>
+</div>
+
+<!-- ═══════ PAGE 2 — EVENTS + BARRIERS ═══════ -->
+<div class="page">
+  <div class="page-subheader">
+    Flash Report — WHS Brazil
+    <span class="sub-right">Week 2026-W21 · v1.0 · paulosjr</span>
+  </div>
+
+  <div class="page-body"><div class="page-content">
+
+    <span class="pill">⚠️ Events</span>
+    <div class="metrics-grid">
+
+      <div class="metrics-col hl">
+        <div class="col-head hl">Brazil Operations</div>
+        <div class="metric-card"><div class="metric-lbl">Serious Incident Rate (W)</div><div class="metric-row"><span class="metric-wk">1.24</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">1.31</div></div></div></div>
+        <div class="metric-card"><div class="metric-lbl">Recordable Incident Rate (W)</div><div class="metric-row"><span class="metric-wk">1.45</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">1.52</div></div></div></div>
+        <div class="metric-card"><div class="metric-lbl">Lost Time Incident Rate (W)</div><div class="metric-row"><span class="metric-wk">0.18</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.22</div></div></div></div>
+        <div class="metric-card"><div class="metric-lbl">First Aid Rate (W)</div><div class="metric-row"><span class="metric-wk">0.09</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.11</div></div></div></div>
+      </div>
+
+      <div class="metrics-col">
+        <div class="col-head dk">Fulfillment Centers</div>
+        <div class="metric-card"><div class="metric-lbl">Serious Incident Rate (W)</div><div class="metric-row"><span class="metric-wk">1.61</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">1.41</div></div></div></div>
+        <div class="metric-card"><div class="metric-lbl">Recordable Incident Rate (W)</div><div class="metric-row"><span class="metric-wk">1.61</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">1.21</div></div></div></div>
+        <div class="metric-card"><div class="metric-lbl">Lost Time Incident Rate (W)</div><div class="metric-row"><span class="metric-wk">0.00</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.20</div></div></div></div>
+        <div class="metric-card"><div class="metric-lbl">First Aid Rate (W)</div><div class="metric-row"><span class="metric-wk">0.00</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.10</div></div></div></div>
+      </div>
+
+      <div class="metrics-col">
+        <div class="col-head dk">Sort Centers</div>
+        <div class="metric-card"><div class="metric-lbl">Serious Incident Rate (W)</div><div class="metric-row"><span class="metric-wk">0.98</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">1.10</div></div></div></div>
+        <div class="metric-card"><div class="metric-lbl">Recordable Incident Rate (W)</div><div class="metric-row"><span class="metric-wk">0.86</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.95</div></div></div></div>
+        <div class="metric-card"><div class="metric-lbl">Lost Time Incident Rate (W)</div><div class="metric-row"><span class="metric-wk">0.00</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.12</div></div></div></div>
+        <div class="metric-card"><div class="metric-lbl">First Aid Rate (W)</div><div class="metric-row"><span class="metric-wk">0.00</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.00</div></div></div></div>
+      </div>
+
+      <div class="metrics-col">
+        <div class="col-head dk">Logistics</div>
+        <div class="metric-card"><div class="metric-lbl">Serious Incident Rate (W)</div><div class="metric-row"><span class="metric-wk">1.05</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">1.22</div></div></div></div>
+        <div class="metric-card"><div class="metric-lbl">Recordable Incident Rate (W)</div><div class="metric-row"><span class="metric-wk">1.12</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">1.30</div></div></div></div>
+        <div class="metric-card"><div class="metric-lbl">Lost Time Incident Rate (W)</div><div class="metric-row"><span class="metric-wk">0.20</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.28</div></div></div></div>
+        <div class="metric-card"><div class="metric-lbl">First Aid Rate (W)</div><div class="metric-row"><span class="metric-wk">0.10</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.14</div></div></div></div>
+      </div>
+
+    </div>
+
+    <div class="spacer"></div>
+
+    <span class="pill">🛡️ Barriers</span>
+    <div class="metrics-grid">
+
+      <div class="metrics-col hl">
+        <div class="col-head hl">Brazil Operations</div>
+        <div class="metric-card"><div class="metric-lbl">Dragonfly Rate (W)</div><div class="metric-row"><span class="metric-wk">20.1</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">17.4</div></div></div></div>
+        <div class="metric-card"><div class="metric-lbl">Dragonfly Closure Rate (W)</div><div class="metric-row"><span class="metric-wk">83.2%</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">85.0%</div></div></div></div>
+        <div class="metric-card"><div class="metric-lbl">Inspection OTC (W)</div><div class="metric-row"><span class="metric-wk">91.3%</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">88.7%</div></div></div></div>
+        <div class="metric-card"><div class="metric-lbl">Near Miss (W)</div><div class="metric-row"><span class="metric-wk">82</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">1,240</div></div></div></div>
+      </div>
+
+      <div class="metrics-col">
+        <div class="col-head dk">Fulfillment Centers</div>
+        <div class="metric-card"><div class="metric-lbl">Dragonfly Rate (W)</div><div class="metric-row"><span class="metric-wk">22.5</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">18.9</div></div></div></div>
+        <div class="metric-card"><div class="metric-lbl">Dragonfly Closure Rate (W)</div><div class="metric-row"><span class="metric-wk">78.6%</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">86.6%</div></div></div></div>
+        <div class="metric-card"><div class="metric-lbl">Inspection OTC (W)</div><div class="metric-row"><span class="metric-wk">100%</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">96.0%</div></div></div></div>
+        <div class="metric-card"><div class="metric-lbl">Near Miss (W)</div><div class="metric-row"><span class="metric-wk">5</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">82</div></div></div></div>
+      </div>
+
+      <div class="metrics-col">
+        <div class="col-head dk">Sort Centers</div>
+        <div class="metric-card"><div class="metric-lbl">Dragonfly Rate (W)</div><div class="metric-row"><span class="metric-wk">18.2</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">16.1</div></div></div></div>
+        <div class="metric-card"><div class="metric-lbl">Dragonfly Closure Rate (W)</div><div class="metric-row"><span class="metric-wk">88.9%</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">90.1%</div></div></div></div>
+        <div class="metric-card"><div class="metric-lbl">Inspection OTC (W)</div><div class="metric-row"><span class="metric-wk">83.3%</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">91.8%</div></div></div></div>
+        <div class="metric-card"><div class="metric-lbl">Near Miss (W)</div><div class="metric-row"><span class="metric-wk">2</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">44</div></div></div></div>
+      </div>
+
+      <div class="metrics-col">
+        <div class="col-head dk">Logistics</div>
+        <div class="metric-card"><div class="metric-lbl">Dragonfly Rate (W)</div><div class="metric-row"><span class="metric-wk">17.4</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">15.8</div></div></div></div>
+        <div class="metric-card"><div class="metric-lbl">Dragonfly Closure Rate (W)</div><div class="metric-row"><span class="metric-wk">80.0%</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">82.3%</div></div></div></div>
+        <div class="metric-card"><div class="metric-lbl">Inspection OTC (W)</div><div class="metric-row"><span class="metric-wk">90.0%</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">87.2%</div></div></div></div>
+        <div class="metric-card"><div class="metric-lbl">Near Miss (W)</div><div class="metric-row"><span class="metric-wk">12</span><div class="metric-ytd"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">198</div></div></div></div>
+      </div>
+
+    </div>
+
+  </div></div>
+
+  <div class="footer">
+    <div class="footer-left">
+      <div class="footer-icon">🛡️</div>
+      <div><div class="footer-brand">WHS — Workplace Health &amp; Safety</div><div class="footer-tagline">Engage · Enable · Inspire</div></div>
+    </div>
+    <div class="footer-cta">
+      <span class="footer-cta-txt">Have you done your deep dive today?</span>
+      <button class="footer-go">Go!</button>
+    </div>
+    <span class="page-num">2 / 2</span>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
