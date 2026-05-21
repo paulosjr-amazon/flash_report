@@ -33,9 +33,15 @@ img#preview{max-width:180px;max-height:80px;margin:.75rem auto;display:none;bord
     <button type="button" class="slot-btn" id="slot-safetogo" onclick="setSlot('safetogo-logo')">Safe to Go</button>
     <button type="button" class="slot-btn" id="slot-amazon" onclick="setSlot('amazon-logo')">Amazon</button>
   </div>
-  <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap">
+  <div style="display:flex;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap">
     <button type="button" class="slot-btn" id="slot-card-brazil" onclick="setSlot('card-brazil-bg')">Card — Brazil Operations</button>
     <button type="button" class="slot-btn" id="slot-card-others" onclick="setSlot('card-others-bg')">Card — Demais colunas</button>
+  </div>
+  <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap">
+    <button type="button" class="slot-btn" id="slot-icon-dyk" onclick="setSlot('icon-did-you-know')">💡 Did You Know?</button>
+    <button type="button" class="slot-btn" id="slot-icon-ss" onclick="setSlot('icon-success-stories')">🏆 Success Stories</button>
+    <button type="button" class="slot-btn" id="slot-icon-hf" onclick="setSlot('icon-hot-flag')">🚩 Hot Flag</button>
+    <button type="button" class="slot-btn" id="slot-icon-bd" onclick="setSlot('icon-best-dragonfly')">🐉 Best Dragonfly</button>
   </div>
 
   <div class="drop" onclick="document.getElementById('file').click()">
@@ -54,7 +60,9 @@ function setSlot(slot){
   document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('active'));
   const map = {
     'header-logo':'slot-header','safetogo-logo':'slot-safetogo','amazon-logo':'slot-amazon',
-    'card-brazil-bg':'slot-card-brazil','card-others-bg':'slot-card-others'
+    'card-brazil-bg':'slot-card-brazil','card-others-bg':'slot-card-others',
+    'icon-did-you-know':'slot-icon-dyk','icon-success-stories':'slot-icon-ss',
+    'icon-hot-flag':'slot-icon-hf','icon-best-dragonfly':'slot-icon-bd'
   };
   const el = document.getElementById(map[slot]);
   if(el) el.classList.add('active');

@@ -145,14 +145,26 @@ ALLOWED_IMAGE_TYPES = {"image/png", "image/jpeg", "image/svg+xml", "image/webp"}
 async def upload_logo(file: UploadFile = File(...), slot: str = Form("header-logo")):
     if file.content_type not in ALLOWED_IMAGE_TYPES:
         raise HTTPException(status_code=400, detail="Only PNG, JPG, SVG or WEBP allowed")
-    allowed_slots = {"header-logo", "safetogo-logo", "amazon-logo", "card-brazil-bg", "card-others-bg"}
+    allowed_slots = {
+        "header-logo", "safetogo-logo", "amazon-logo", "card-brazil-bg", "card-others-bg",
+        "icon-did-you-know", "icon-success-stories", "icon-hot-flag", "icon-best-dragonfly"
+    }
     if slot not in allowed_slots:
         slot = "header-logo"
-    suffix = Path(file.filename).suffix or ".png"
-    dest = ASSETS_DIR / f"{slot}{suffix}"
-    # Remove old versions with different extension
-    for old in ASSETS_DIR.glob(f"{slot}.*"):
-        old.unlink()
+    # Icons go in assets/icons/
+    if slot.startswith("icon-"):
+        dest_dir = ASSETS_DIR / "icons"
+        dest_dir.mkdir(exist_ok=True)
+        suffix = Path(file.filename).suffix or ".png"
+        dest = dest_dir / f"{slot}{suffix}"
+        for old in dest_dir.glob(f"{slot}.*"):
+            old.unlink()
+    else:
+        suffix = Path(file.filename).suffix or ".png"
+        dest = ASSETS_DIR / f"{slot}{suffix}"
+    else:
+        for old in ASSETS_DIR.glob(f"{slot}.*"):
+            old.unlink()
     content = await file.read()
     with open(dest, "wb") as f:
         f.write(content)
