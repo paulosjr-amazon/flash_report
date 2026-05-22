@@ -787,13 +787,19 @@ function scheduleAutosave() {
 }
 
 async function saveReport(status) {
+  let user = localStorage.getItem('fr_user') || '';
+  if (!user) {
+    user = prompt('Enter your login (e.g. paulosjr):');
+    if (!user) return;
+    localStorage.setItem('fr_user', user);
+  }
   const content = collectContent();
   localStorage.setItem(`fr_${BU_PARAM}_${WEEK_PARAM}`, JSON.stringify(content));
   try {
     const res = await fetch(`${API_BASE}/api/report/save`, {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ week: WEEK_PARAM, bu: BU_PARAM, status, content })
+      body: JSON.stringify({ week: WEEK_PARAM, bu: BU_PARAM, status, content, submitted_by: user })
     });
     if (status === 'published') {
       document.getElementById('autosave-txt').textContent = '✓ Publicado';

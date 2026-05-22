@@ -38,70 +38,98 @@ HTML = """<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Upload Assets — Flash Report</title>
+<title>Admin — Flash Report</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Inter',system-ui,sans-serif;background:#f2f2f2;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
-  .card{background:#fff;border-radius:20px;box-shadow:0 2px 20px rgba(0,0,0,.07);padding:2.5rem;width:100%;max-width:500px}
-  h2{font-size:1.05rem;font-weight:700;color:#1a1a1a;margin-bottom:.25rem}
-  p{font-size:.8rem;color:#888;margin-bottom:1.25rem}
-  .section-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#aaa;margin-bottom:.5rem;margin-top:1rem}
-  .slots{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.25rem}
-  .slot{padding:.55rem .8rem;border:2px solid #e0e0e0;border-radius:10px;cursor:pointer;font-size:.78rem;font-weight:600;color:#555;background:#fafafa;transition:.15s}
-  .slot:hover{border-color:#A8D872;background:#f4faf0}
+  body{font-family:'Inter',system-ui,sans-serif;background:#f2f2f2;min-height:100vh;display:flex;padding:0}
+  .layout{display:grid;grid-template-columns:1fr 360px;width:100%;min-height:100vh}
+  .panel-left{padding:2.5rem;display:flex;align-items:center;justify-content:center}
+  .panel-right{background:#fff;border-left:1px solid #e8e8e8;padding:2rem 1.5rem;overflow-y:auto}
+  .card{background:#fff;border-radius:20px;box-shadow:0 2px 20px rgba(0,0,0,.07);padding:2rem 2.25rem;width:100%;max-width:460px}
+  h2{font-size:1rem;font-weight:800;color:#1a1a1a;margin-bottom:.2rem}
+  .sub{font-size:.75rem;color:#888;margin-bottom:1.25rem}
+  .section-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#aaa;margin-bottom:.5rem;margin-top:1rem}
+  .slots{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-bottom:.25rem}
+  .slot{padding:.5rem .7rem;border:1.5px solid #e0e0e0;border-radius:10px;cursor:pointer;font-size:.72rem;font-weight:600;color:#555;background:#fafafa;transition:.15s}
+  .slot:hover{border-color:#1c6b3a;background:#f4faf0}
   .slot.active{border-color:#1c6b3a;background:linear-gradient(90deg,#A8D872,#B7DCCB);color:#1c3d12}
-  .drop{border:2px dashed #d4e8d5;border-radius:12px;padding:1.5rem;text-align:center;cursor:pointer;margin:1rem 0;transition:.15s}
+  .drop{border:2px dashed #d4e8d5;border-radius:12px;padding:1.25rem;text-align:center;cursor:pointer;margin:.75rem 0;transition:.15s}
   .drop:hover{background:#f4faf0}
   .drop input{display:none}
-  .drop-label{font-size:.85rem;color:#4CAF50;font-weight:600}
-  .drop-hint{font-size:.72rem;color:#aaa;margin-top:.3rem}
-  img#preview{display:none;max-height:70px;max-width:200px;margin:.75rem auto;border-radius:8px}
-  button{width:100%;padding:.65rem;background:#1c6b3a;color:#fff;border:none;border-radius:999px;font-weight:700;font-size:.9rem;cursor:pointer}
-  button:disabled{opacity:.4;cursor:not-allowed}
-  .msg{margin-top:.9rem;padding:.6rem 1rem;border-radius:8px;font-size:.82rem;display:none}
+  .drop-label{font-size:.82rem;color:#4CAF50;font-weight:600}
+  .drop-hint{font-size:.68rem;color:#aaa;margin-top:.2rem}
+  img#preview{display:none;max-height:60px;max-width:180px;margin:.5rem auto;border-radius:8px}
+  .btn{width:100%;padding:.55rem;background:#1c6b3a;color:#fff;border:none;border-radius:999px;font-weight:700;font-size:.82rem;cursor:pointer}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn-dark{background:#3a3a3a}
+  .msg{margin-top:.6rem;padding:.5rem .8rem;border-radius:8px;font-size:.75rem;display:none}
   .msg.ok{display:block;background:#edf5ee;color:#1c6b3a}
   .msg.err{display:block;background:#fde8e8;color:#c62828}
+  .hist-title{font-size:.75rem;font-weight:800;color:#1a1a1a;margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
+  .hist-title span{background:#3a3a3a;color:#fff;font-size:.55rem;padding:.15rem .5rem;border-radius:999px}
+  .hist-table{width:100%;border-collapse:collapse;font-size:.7rem}
+  .hist-table th{padding:.4rem .5rem;text-align:left;font-weight:700;background:#f8f8f8;color:#555;border-bottom:1px solid #eee}
+  .hist-table td{padding:.35rem .5rem;border-bottom:1px solid #f5f5f5}
+  .st-pub{color:#2e7d32;font-weight:700;font-size:.62rem}
+  .st-draft{color:#f57f17;font-weight:700;font-size:.62rem}
+  .st-pend{color:#9e9e9e;font-weight:700;font-size:.62rem}
+  .empty{text-align:center;color:#ccc;padding:2rem;font-size:.8rem}
 </style>
 </head>
 <body>
-<div class="card">
-  <h2>Upload de Assets</h2>
-  <p>Selecione o slot e o arquivo. PNG, JPG, SVG ou WEBP.</p>
+<div class="layout">
+  <div class="panel-left">
+    <div class="card">
+      <h2>⚙️ Admin — Flash Report</h2>
+      <p class="sub">Upload de dados e recálculo do report</p>
 
-  <div class="section-label">Logos do Header</div>
-  <div class="slots">
-    <div class="slot active" data-slot="header-logo" onclick="setSlot(this)">🛡️ Logo Header</div>
-    <div class="slot" data-slot="safetogo-logo" onclick="setSlot(this)">✅ Safe to Go</div>
-    <div class="slot" data-slot="amazon-logo" onclick="setSlot(this)">📦 Amazon</div>
-    <div class="slot" data-slot="footer-logo" onclick="setSlot(this)">🦶 Logo Rodapé</div>
+      <div class="section-label">Logos</div>
+      <div class="slots">
+        <div class="slot active" data-slot="header-logo" onclick="setSlot(this)">🛡️ Header</div>
+        <div class="slot" data-slot="safetogo-logo" onclick="setSlot(this)">✅ Safe to Go</div>
+        <div class="slot" data-slot="amazon-logo" onclick="setSlot(this)">📦 Amazon</div>
+        <div class="slot" data-slot="footer-logo" onclick="setSlot(this)">🦶 Rodapé</div>
+      </div>
+
+      <div class="section-label">Ícones</div>
+      <div class="slots">
+        <div class="slot" data-slot="icon-did-you-know" onclick="setSlot(this)">💡 Did You Know?</div>
+        <div class="slot" data-slot="icon-success-stories" onclick="setSlot(this)">🏆 Success Stories</div>
+        <div class="slot" data-slot="icon-hot-flag" onclick="setSlot(this)">🚩 Hot Flag</div>
+        <div class="slot" data-slot="icon-best-dragonfly" onclick="setSlot(this)">🐉 Dragonfly</div>
+      </div>
+
+      <div class="section-label">Dados (CSV)</div>
+      <div class="slots">
+        <div class="slot" data-slot="data-flash-report" onclick="setSlot(this)">📊 Flash Report</div>
+        <div class="slot" data-slot="data-incidents" onclick="setSlot(this)">🚨 Incidents</div>
+        <div class="slot" data-slot="data-nearmiss" onclick="setSlot(this)">⚠️ Near Miss</div>
+        <div class="slot" data-slot="data-dragonfly" onclick="setSlot(this)">🐉 Dragonfly</div>
+        <div class="slot" data-slot="data-inspections" onclick="setSlot(this)">🔍 Inspections</div>
+      </div>
+
+      <div class="drop" onclick="document.getElementById('f').click()">
+        <input type="file" id="f" accept=".png,.jpg,.jpeg,.svg,.webp,.csv" onchange="onFile(this)">
+        <div class="drop-label">Clique para selecionar</div>
+        <div class="drop-hint">PNG · JPG · SVG · WEBP · CSV</div>
+      </div>
+      <img id="preview" alt="preview">
+      <button class="btn" id="btn" onclick="upload()" disabled>Fazer Upload</button>
+      <div class="msg" id="msg"></div>
+
+      <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid #eee">
+        <button class="btn btn-dark" onclick="recalc()">🔄 Recalcular e Abrir Flash Report</button>
+        <div class="msg" id="msg2"></div>
+      </div>
+    </div>
   </div>
 
-  <div class="section-label">Ícones dos Cards</div>
-  <div class="slots">
-    <div class="slot" data-slot="icon-did-you-know" onclick="setSlot(this)">💡 Did You Know?</div>
-    <div class="slot" data-slot="icon-success-stories" onclick="setSlot(this)">🏆 Success Stories</div>
-    <div class="slot" data-slot="icon-hot-flag" onclick="setSlot(this)">🚩 Hot Flag</div>
-    <div class="slot" data-slot="icon-best-dragonfly" onclick="setSlot(this)">🐉 Best Dragonfly</div>
+  <div class="panel-right">
+    <div class="hist-title">Histórico de Emissões <span id="hist-count">0</span></div>
+    <div id="history"></div>
   </div>
-
-  <div class="section-label">Dados</div>
-  <div class="slots">
-    <div class="slot" data-slot="data-flash-report" onclick="setSlot(this)">📊 Flash Report</div>
-    <div class="slot" data-slot="data-incidents" onclick="setSlot(this)">🚨 Incidents</div>
-    <div class="slot" data-slot="data-nearmiss" onclick="setSlot(this)">⚠️ Near Miss</div>
-    <div class="slot" data-slot="data-dragonfly" onclick="setSlot(this)">🐉 Dragonfly</div>
-    <div class="slot" data-slot="data-inspections" onclick="setSlot(this)">🔍 Inspections</div>
-  </div>
-
-  <div class="drop" onclick="document.getElementById('f').click()">
-    <input type="file" id="f" accept=".png,.jpg,.jpeg,.svg,.webp,.csv" onchange="onFile(this)">
-    <div class="drop-label">Clique para selecionar</div>
-    <div class="drop-hint">PNG · JPG · SVG · WEBP</div>
-  </div>
-  <img id="preview" alt="preview">
-  <button id="btn" onclick="upload()" disabled>Fazer Upload</button>
-  <div class="msg" id="msg"></div>
 </div>
+
 <script>
 let slot = 'header-logo';
 function setSlot(el){
@@ -118,6 +146,37 @@ function onFile(input){
     r.onload = e => { const img=document.getElementById('preview'); img.src=e.target.result; img.style.display='block'; };
     r.readAsDataURL(file);
   }
+}
+async function loadHistory(){
+  const div = document.getElementById('history');
+  const count = document.getElementById('hist-count');
+  try{
+    const res = await fetch('/api/report/history');
+    const data = await res.json();
+    count.textContent = data.entries.length;
+    if(!data.entries.length){ div.innerHTML='<div class="empty">Nenhuma emissão registrada</div>'; return; }
+    let html = '<table class="hist-table"><tr><th>Week</th><th>BU</th><th>Status</th><th>By</th><th>Date</th></tr>';
+    data.entries.forEach(e => {
+      const cls = e.status==='published'?'st-pub':e.status==='draft'?'st-draft':'st-pend';
+      const ts = e.timestamp ? new Date(e.timestamp).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}) + ' ' + new Date(e.timestamp).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) : '—';
+      html += '<tr><td>'+e.week+'</td><td style="font-weight:600">'+e.bu+'</td><td><span class="'+cls+'">'+e.status.toUpperCase()+'</span></td><td>'+(e.submitted_by||'—')+'</td><td style="color:#999">'+ts+'</td></tr>';
+    });
+    html += '</table>';
+    div.innerHTML = html;
+  } catch(e){ div.innerHTML='<div class="empty" style="color:#c62828">Erro ao carregar</div>'; }
+}
+loadHistory();
+async function recalc(){
+  const msg = document.getElementById('msg2');
+  msg.className='msg'; msg.style.display='none';
+  try{
+    const res = await fetch('/api/recalc', {method:'POST'});
+    const data = await res.json();
+    if(res.ok){
+      msg.className='msg ok'; msg.textContent='✓ Atualizado! Redirecionando...';
+      setTimeout(()=>{ window.location.href='https://ds-akyj2d5n--3000.us-east-1.prod.proxy.devspaces.amazon.dev/flash-report.html?mode=edit'; }, 1500);
+    } else { msg.className='msg err'; msg.textContent='Erro: '+(data.detail||'falha'); }
+  } catch(e){ msg.className='msg err'; msg.textContent='Erro de rede.'; }
 }
 async function upload(){
   const file = document.getElementById('f').files[0];
@@ -223,10 +282,155 @@ def save_report(req: ReportSaveRequest):
     save_states(states)
     return {"ok": True, "status": req.status}
 
+@app.get("/api/report/history")
+def get_report_history():
+    states = load_states()
+    entries = []
+    for week, bus in sorted(states.items(), reverse=True):
+        for bu, data in sorted(bus.items()):
+            entries.append({
+                "week": week,
+                "bu": BU_LABELS.get(bu, bu),
+                "status": data.get("status", "pending"),
+                "submitted_by": data.get("submitted_by"),
+                "timestamp": data.get("timestamp"),
+            })
+    return {"entries": entries}
+
 @app.get("/api/weeks")
 def get_weeks():
     states = load_states()
     return {"weeks": sorted(states.keys(), reverse=True)}
+
+
+# ── Recalculate Flash Report ──────────────────────────────────────────────────
+
+@app.post("/api/recalc")
+def recalculate_report():
+    import csv, re
+    from collections import defaultdict
+    from datetime import datetime as dt
+
+    DATA_DIR = ASSETS_DIR.parent / "data"
+    FLASH_CSV = DATA_DIR / "data-flash-report.csv"
+    HTML_FILE = ASSETS_DIR.parent / "flash-report.html"
+    PUBLIC_FILE = Path("/home/paulosjr/.workspace/flash-report/public/flash-report.html")
+
+    if not FLASH_CSV.exists():
+        raise HTTPException(400, "data-flash-report.csv not found. Upload it first.")
+    if not HTML_FILE.exists():
+        raise HTTPException(400, "flash-report.html not found.")
+
+    rows = list(csv.DictReader(open(FLASH_CSV, encoding='utf-8-sig')))
+
+    # Detect latest week
+    weeks = sorted(set(r['Week'] for r in rows if r.get('Week','')))
+    if not weeks:
+        raise HTTPException(400, "No week data found in CSV.")
+    latest_week = weeks[-1]
+    week_rows = [r for r in rows if r['Week'] == latest_week]
+
+    def sf(v):
+        try: return float(str(v).strip().replace(',','.')) if v and str(v).strip() else 0.0
+        except: return 0.0
+
+    def rate(n, h): return (n * 200000 / h) if h > 0 else 0
+    def pct(n, d): return (n / d * 100) if d > 0 else 0
+    def fmt(v, d=2): return f'{v:.{d}f}'
+    def fmt_pct(v): return f'{v:.1f}%'
+
+    def calc_bu(bu_rows, all_rows):
+        h_w = sum(sf(r['Total_Hours_Week']) for r in bu_rows)
+        h_y = sum(sf(r['Total_Hours_YTD']) for r in all_rows)
+        si_w = sum(sf(r['INC_SI_Week']) for r in bu_rows)
+        si_y = sum(sf(r['INC_SI_YTD']) for r in all_rows)
+        ri_w = sum(sf(r['INC_RI_Week']) for r in bu_rows)
+        ri_y = sum(sf(r['INC_RI_YTD']) for r in all_rows)
+        lti_w = sum(sf(r['INC_LTI_Week']) for r in bu_rows)
+        lti_y = sum(sf(r['INC_LTI_YTD']) for r in all_rows)
+        fai_w = sum(sf(r['INC_FAI_Week']) for r in bu_rows)
+        fai_y = sum(sf(r['INC_FAI_YTD']) for r in all_rows)
+        nm_w = sum(sf(r['INC_Near_Miss_Week']) for r in bu_rows)
+        nm_y = sum(sf(r['INC_Near_Miss_YTD']) for r in all_rows)
+        dfy_obs_w = sum(sf(r['DFY_Total_Obs_Week']) for r in bu_rows)
+        dfy_obs_y = sum(sf(r['DFY_Total_Obs_YTD']) for r in all_rows)
+        dfy_closed_w = sum(sf(r['DFY_Closed_Week']) for r in bu_rows)
+        dfy_closed_y = sum(sf(r['DFY_Closed_YTD']) for r in all_rows)
+        insp_ontime_w = sum(sf(r['INSP_On_Time_Week']) for r in bu_rows)
+        insp_ontime_y = sum(sf(r['INSP_On_Time_YTD']) for r in all_rows)
+        insp_due_w = sum(sf(r['INSP_Due_Insp_Week']) for r in bu_rows)
+        insp_due_y = sum(sf(r['INSP_Due_Insp_YTD']) for r in all_rows)
+        return {
+            'sir': (fmt(rate(si_w,h_w)), fmt(rate(si_y,h_y))),
+            'rir': (fmt(rate(ri_w,h_w)), fmt(rate(ri_y,h_y))),
+            'ltir': (fmt(rate(lti_w,h_w)), fmt(rate(lti_y,h_y))),
+            'fair': (fmt(rate(fai_w,h_w)), fmt(rate(fai_y,h_y))),
+            'dfy_rate': (fmt(rate(dfy_obs_w,h_w),1), fmt(rate(dfy_obs_y,h_y),1)),
+            'dfy_closure': (fmt_pct(pct(dfy_closed_w,dfy_obs_w)), fmt_pct(pct(dfy_closed_y,dfy_obs_y))),
+            'insp_otc': (fmt_pct(pct(insp_ontime_w,insp_due_w)), fmt_pct(pct(insp_ontime_y,insp_due_y))),
+            'nm': (fmt(rate(nm_w,h_w),1), fmt(rate(nm_y,h_y),1)),
+        }
+
+    fc_w = [r for r in week_rows if r['BU']=='LATAMCF']
+    sc_w = [r for r in week_rows if r['BU']=='ATS-LATAM']
+    log_w = [r for r in week_rows if r['BU']=='AMZL-LATAM']
+    fc_all = [r for r in rows if r['BU']=='LATAMCF']
+    sc_all = [r for r in rows if r['BU']=='ATS-LATAM']
+    log_all = [r for r in rows if r['BU']=='AMZL-LATAM']
+
+    agg = {
+        'Brazil': calc_bu(week_rows, rows),
+        'FC': calc_bu(fc_w, fc_all),
+        'SC': calc_bu(sc_w, sc_all),
+        'Logistics': calc_bu(log_w, log_all),
+    }
+
+    # Patch HTML
+    html = HTML_FILE.read_text(encoding='utf-8')
+
+    COL_ORDER = ['Brazil', 'FC', 'SC', 'Logistics']
+    EVENTS_METRICS = ['sir', 'rir', 'ltir', 'fair']
+    BARRIERS_METRICS = ['dfy_rate', 'dfy_closure', 'insp_otc', 'nm']
+
+    wk_pattern = r'(<div class="metric-wk">)([^<]*)(<\/div>)'
+    ytd_pattern = r'(<div class="metric-ytd-val">)([^<]*)(<\/div>)'
+
+    def patch_section(html, pill_text, metrics):
+        start = html.find(f'<span class="pill">{pill_text}</span>')
+        if start == -1: return html
+        end = html.find('<div style="height:3px', start)
+        if end == -1: end = html.find('<div class="hl-grid"', start)
+        if end == -1: return html
+        chunk = html[start:end]
+        wk_matches = list(re.finditer(wk_pattern, chunk))
+        ytd_matches = list(re.finditer(ytd_pattern, chunk))
+        vals = []
+        for col in COL_ORDER:
+            for metric in metrics:
+                w, y = agg[col][metric]
+                vals.append((w, y))
+        replacements = []
+        for i, (w, y) in enumerate(vals):
+            if i < len(wk_matches):
+                replacements.append((wk_matches[i].start(), wk_matches[i].end(), f'<div class="metric-wk">{w}</div>'))
+            if i < len(ytd_matches):
+                replacements.append((ytd_matches[i].start(), ytd_matches[i].end(), f'<div class="metric-ytd-val">{y}</div>'))
+        replacements.sort(key=lambda x: x[0], reverse=True)
+        for s, e, new in replacements:
+            chunk = chunk[:s] + new + chunk[e:]
+        return html[:start] + chunk + html[end:]
+
+    html = patch_section(html, 'Events', EVENTS_METRICS)
+    html = patch_section(html, 'Barriers', BARRIERS_METRICS)
+
+    # Update week references
+    html = re.sub(r'Week 2026-W\d+', f'Week 2026-W{latest_week}', html)
+
+    HTML_FILE.write_text(html, encoding='utf-8')
+    if PUBLIC_FILE.parent.exists():
+        PUBLIC_FILE.write_text(html, encoding='utf-8')
+
+    return {"ok": True, "detail": f"Week {latest_week} — {len(week_rows)} sites updated"}
 
 
 # ── Claude AI Insights ────────────────────────────────────────────────────────
