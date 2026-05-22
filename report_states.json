@@ -1,0 +1,26 @@
+{
+  "2026-W19": {
+    "BR": {
+      "status": "published",
+      "content": {
+        "did_you_know": "Amazon Brazil operations report that proactive safety reporting reduces workplace incidents by up to 40%, making employee engagement the strongest predictor of injury prevention.",
+        "success_stories": "# Safety Success Story\n\n**Site GRU2** achieved zero lost-time incidents this week by implementing additional guardrails at the conveyor belt transfer point, addressing the root cause of previous pinch-point hazards.",
+        "hot_flag": "<strong>Forklift Collision Risk</strong>: 3 incidents reported this week in warehouse operations. Implement mandatory refresher training and increase pedestrian zone markings immediately.",
+        "ev_hl_0": "Zero serious incidents recorded this week maintains strong safety culture across Brazil Operations.",
+        "ev_hl_1": "Recordable Incident Rate of 0.58 YTD remains within acceptable performance thresholds for the section.",
+        "ev_hl_2": "Lost Time Incident Rate at 0.53 YTD demonstrates effective incident management and recovery protocols.",
+        "ev_ll_0": "First aid rate of 11.40 YTD indicates elevated minor injury frequency requiring root cause analysis.",
+        "ev_ll_1": "Lost time incident rate of 0.53 YTD suggests continued workplace hazards impacting workforce availability.",
+        "ev_ll_2": "Zero incidents this week may mask underlying hazard exposure requiring deeper investigation and trend monitoring.",
+        "bar_hl_0": "Dragonfly Closure Rate achieved 77.9% YTD, demonstrating strong barrier issue resolution performance.",
+        "bar_hl_1": "Inspection OTC Week metric at 61.4% shows significant on-time completion improvement this week.",
+        "bar_hl_2": "Near Miss reporting at 21.3 weekly indicates active hazard identification and proactive safety culture.",
+        "bar_ll_0": "Dragonfly Rate spiked to 215.5 this week, representing a concerning 295% increase from YTD average of 54.5.",
+        "bar_ll_1": "Inspection OTC YTD at 26.1% falls significantly below weekly performance, suggesting inconsistent compliance trends.",
+        "bar_ll_2": "Near Miss YTD at 13.0 underperforms weekly rate of 21.3, indicating declining proactive hazard reporting trend."
+      },
+      "submitted_by": "anonymous",
+      "timestamp": "2026-05-22T12:01:59.020983+00:00"
+    }
+  }
+}
