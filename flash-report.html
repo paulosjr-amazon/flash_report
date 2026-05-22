@@ -167,7 +167,7 @@ body{
 .dfy-site{font-weight:800;font-size:.95rem;color:var(--text)}
 .dfy-dot{font-size:.7rem;color:#ddd}
 .dfy-login{font-size:.72rem;color:var(--text-sec)}
-.dfy-obs{font-size:.72rem;color:#2e9b5a;font-weight:700}
+.dfy-obs{font-size:.72rem;color:#8FD44F;font-weight:700}
 .dfy-date{font-size:.65rem;color:#bbb;margin-left:auto;white-space:nowrap}
 .dfy-body{font-size:.78rem;color:#555;line-height:1.7;border-top:1px solid #eee;padding-top:.6rem}
 
@@ -242,7 +242,7 @@ body{
 .hl-good .hl-title{color:#4a7a2e}
 .hl-bad .hl-title{color:#c62828}
 .hl-ai-btn{font-size:.62rem;font-weight:700;padding:.2rem .65rem;border-radius:999px;cursor:pointer;border:none;letter-spacing:.04em;transition:.15s}
-.hl-good .hl-ai-btn{background:#1c6b3a;color:#fff}
+.hl-good .hl-ai-btn{background:transparent;border:1.5px solid #8FD44F;color:#3d6b2a}
 .hl-bad .hl-ai-btn{background:#e53935;color:#fff}
 .hl-ai-btn:disabled{opacity:.5;cursor:not-allowed}
 .hl-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.45rem}
@@ -315,8 +315,11 @@ body{
   </div>
   <div class="edit-bar-right">
     <span class="autosave-txt" id="autosave-txt">—</span>
+    <button class="btn-draft" onclick="document.getElementById('bu-modal').style.display='flex'">📋 Business</button>
     <button class="btn-draft" onclick="saveReport('draft')">Salvar Rascunho</button>
-    <button class="btn-publish" onclick="saveReport('published')">✓ Publicar</button>
+    <button class="btn-draft" onclick="saveReport('published')">✓ Publicar</button>
+    <button class="btn-draft" id="lang-btn" onclick="toggleLang()">🌐 <span id="lang-label">EN</span></button>
+    <button class="btn-draft" id="admin-btn" onclick="openAdmin()">⚙️ Admin</button>
   </div>
 </div>
 
@@ -381,11 +384,6 @@ body{
     </div>
   </div>
 
-  <div class="toolbar">
-    <button class="tb-btn" onclick="document.getElementById('bu-modal').style.display='flex'">📋</button>
-    <button class="tb-btn" id="lang-btn" onclick="toggleLang()">🌐 <span id="lang-label">EN</span></button>
-    <button class="tb-btn" id="admin-btn" onclick="openAdmin()">⚙️</button>
-  </div>
 
   <div class="page-body"><div class="page-content">
 
@@ -418,8 +416,8 @@ body{
         <!-- 🏆 Melhor Brasil — DSP3 (Logistics, 11 obs — melhor geral) -->
         <div class="dfy-card">
           <div class="dfy-meta">
-            <span style="font-size:.6rem;font-weight:800;background:#1c6b3a;color:#fff;padding:.2rem .7rem;border-radius:999px;letter-spacing:.04em">🏆 Best Brazil</span>
-            <span class="dfy-type" style="background:#6f42c1;color:#fff">Logistics</span>
+            <span style="font-size:.6rem;font-weight:800;background:#8FD44F;color:#2d4a1e;padding:.2rem .7rem;border-radius:999px;letter-spacing:.04em">🏆 Best Brazil</span>
+            <span class="dfy-type" style="background:transparent;border:1.5px solid #8FD44F;color:#3d6b2a">Logistics</span>
             <span class="dfy-site">DSP3</span><span class="dfy-dot">·</span>
             <span class="dfy-login">@abarros</span><span class="dfy-dot">·</span>
             <span class="dfy-obs">✍️ 11 obs.</span>
@@ -431,7 +429,7 @@ body{
         <!-- Best FC (GRU5, 8 obs) -->
         <div class="dfy-card">
           <div class="dfy-meta">
-            <span class="dfy-type" style="background:#1c6b3a;color:#fff">Fulfillment Center</span>
+            <span class="dfy-type" style="background:transparent;border:1.5px solid #8FD44F;color:#3d6b2a">Fulfillment Center</span>
             <span class="dfy-site">GRU5</span><span class="dfy-dot">·</span>
             <span class="dfy-login">@jsilva</span><span class="dfy-dot">·</span>
             <span class="dfy-obs">✍️ 8 obs.</span>
@@ -443,7 +441,7 @@ body{
         <!-- Best SC (CGH3, 3 obs) -->
         <div class="dfy-card">
           <div class="dfy-meta">
-            <span class="dfy-type" style="background:#1565c0;color:#fff">Sort Center</span>
+            <span class="dfy-type" style="background:transparent;border:1.5px solid #8FD44F;color:#3d6b2a">Sort Center</span>
             <span class="dfy-site">CGH3</span><span class="dfy-dot">·</span>
             <span class="dfy-login">@rcoelho</span><span class="dfy-dot">·</span>
             <span class="dfy-obs">✍️ 3 obs.</span>
@@ -455,7 +453,7 @@ body{
         <!-- Best Logistics 2nd (DSP3 já é Best Brazil — entra CNF1 como runner-up Logistics) -->
         <div class="dfy-card">
           <div class="dfy-meta">
-            <span class="dfy-type" style="background:#6f42c1;color:#fff">Logistics</span>
+            <span class="dfy-type" style="background:transparent;border:1.5px solid #8FD44F;color:#3d6b2a">Logistics</span>
             <span class="dfy-site">DSP2</span><span class="dfy-dot">·</span>
             <span class="dfy-login">@cmendes</span><span class="dfy-dot">·</span>
             <span class="dfy-obs">✍️ 7 obs.</span>
@@ -834,12 +832,36 @@ document.addEventListener('keydown', e => {
 });
 
 function openAdmin() {
-  if (!adminUnlocked) {
-    const pass = prompt('Admin password:');
-    if (pass !== ADMIN_PASS) { alert('Access denied'); return; }
-    adminUnlocked = true;
+  if (adminUnlocked) {
+    window.open('https://ds-akyj2d5n--3003.us-east-1.prod.proxy.devspaces.amazon.dev', '_blank');
+    return;
   }
-  window.open('https://ds-akyj2d5n--3003.us-east-1.prod.proxy.devspaces.amazon.dev', '_blank');
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:3000;display:flex;align-items:center;justify-content:center';
+  overlay.innerHTML = `<div style="background:#fff;border-radius:16px;padding:1.5rem 2rem;width:300px;box-shadow:0 12px 40px rgba(0,0,0,.2)">
+    <div style="font-size:.9rem;font-weight:800;margin-bottom:.75rem">🔒 Admin Access</div>
+    <input id="admin-pass-input" type="password" placeholder="Password" style="width:100%;padding:.45rem .75rem;border:1.5px solid #ddd;border-radius:8px;font-size:.82rem;outline:none" autofocus>
+    <div style="display:flex;gap:.5rem;margin-top:.75rem">
+      <button onclick="this.closest('div').closest('div').remove()" style="flex:1;padding:.4rem;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer;font-size:.75rem;font-weight:600">Cancel</button>
+      <button onclick="checkAdminPass()" style="flex:1;padding:.4rem;border:none;border-radius:8px;background:linear-gradient(135deg,#8FD44F,#A8D8A8);color:#2d4a1e;cursor:pointer;font-size:.75rem;font-weight:700">Enter</button>
+    </div>
+  </div>`;
+  document.body.appendChild(overlay);
+  const input = document.getElementById('admin-pass-input');
+  input.focus();
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') checkAdminPass(); });
+}
+function checkAdminPass() {
+  const input = document.getElementById('admin-pass-input');
+  if (input.value === ADMIN_PASS) {
+    adminUnlocked = true;
+    input.closest('div').closest('div').remove();
+    window.open('https://ds-akyj2d5n--3003.us-east-1.prod.proxy.devspaces.amazon.dev', '_blank');
+  } else {
+    input.style.borderColor = '#e53935';
+    input.value = '';
+    input.placeholder = 'Wrong password';
+  }
 }
 
 // ── Language toggle ──────────────────────────────────────────────────────────

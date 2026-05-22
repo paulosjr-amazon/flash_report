@@ -21,6 +21,28 @@
       },
       "submitted_by": "paulosjr",
       "timestamp": "2026-05-22T14:37:44.883607+00:00"
+    },
+    "FC": {
+      "status": "published",
+      "content": {
+        "did_you_know": "GRU8 implemented enhanced ergonomic workstations in 2024, reducing musculoskeletal injury rates by 18% among associates in packaging departments.",
+        "success_stories": "GRU5 — Implemented ergonomic workstation redesigns reducing repetitive strain injuries by 40% and improving associate safety satisfaction scores significantly.",
+        "hot_flag": "<strong>Conveyor System Entanglement Risk at GRU5</strong>: Loose clothing caught in unguarded conveyor belts causing hand injuries. Immediately inspect all belt guards and enforce mandatory fitted clothing policy.",
+        "ev_hl_0": "Serious Incident Rate: achieved 0.00 vs goal 0.01—zero serious incidents recorded",
+        "ev_hl_1": "Recordable Incident Rate: met target at 0.00 vs goal 0.01—strong performance maintained",
+        "ev_hl_2": "Lost Time Incident Rate: exceeded expectations at 0.00 vs goal 34.15—zero LTI events",
+        "ev_ll_0": "All safety metrics currently performing within established target parameters — no corrective action required",
+        "ev_ll_1": "",
+        "ev_ll_2": "",
+        "bar_hl_0": "Zero incidents recorded this week — demonstrating strong safety performance across all operations",
+        "bar_hl_1": "",
+        "bar_hl_2": "",
+        "bar_ll_0": "Dragonfly Closure Rate: 77.9% YTD vs. 98% goal — missed by 20.1pp, requires action",
+        "bar_ll_1": "Inspection OTC: 26.1% YTD vs. 98% goal — significantly above target, gap of 71.9pp",
+        "bar_ll_2": ""
+      },
+      "submitted_by": "paulosjr",
+      "timestamp": "2026-05-22T19:43:28.238799+00:00"
     }
   }
 }
