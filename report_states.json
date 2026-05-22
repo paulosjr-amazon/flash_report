@@ -1,7 +1,7 @@
 {
   "2026-W19": {
     "BR": {
-      "status": "draft",
+      "status": "published",
       "content": {
         "did_you_know": "Amazon Brazil operations report that proactive safety reporting reduces workplace incidents by up to 40%, making employee engagement the strongest predictor of injury prevention.",
         "success_stories": "# Safety Success Story\n\n**Site GRU2** achieved zero lost-time incidents this week by implementing additional guardrails at the conveyor belt transfer point, addressing the root cause of previous pinch-point hazards.",
@@ -20,7 +20,7 @@
         "bar_ll_2": "Near Miss YTD at 13.0 underperforms weekly rate of 21.3, indicating declining proactive hazard reporting trend."
       },
       "submitted_by": "paulosjr",
-      "timestamp": "2026-05-22T14:37:44.883607+00:00"
+      "timestamp": "2026-05-22T20:29:51.978083+00:00"
     },
     "FC": {
       "status": "published",

@@ -316,8 +316,9 @@ body{
   <div class="edit-bar-right">
     <span class="autosave-txt" id="autosave-txt">—</span>
     <button class="btn-draft" onclick="document.getElementById('bu-modal').style.display='flex'">📋 Business</button>
-    <button class="btn-draft" onclick="saveReport('draft')">Salvar Rascunho</button>
-    <button class="btn-draft" onclick="saveReport('published')">✓ Publicar</button>
+    <button class="btn-draft" onclick="saveReport('draft')">💾 Rascunho</button>
+    <button class="btn-draft" onclick="window.open(`flash-report.html?mode=view&bu=${BU_PARAM}&week=${WEEK_PARAM}`,'_blank')">👁 Preview</button>
+    <button class="btn-draft" onclick="saveReport('published')">✉️ Publicar</button>
     <button class="btn-draft" id="lang-btn" onclick="toggleLang()">🌐 <span id="lang-label">EN</span></button>
     <button class="btn-draft" id="admin-btn" onclick="openAdmin()">⚙️ Admin</button>
   </div>
@@ -781,6 +782,11 @@ async function saveReport(status) {
     });
     if (status === 'published') {
       document.getElementById('autosave-txt').textContent = '✓ Publicado';
+      const buName = BU_LABELS[BU_PARAM] || 'Brazil Operations';
+      const reportUrl = `${window.location.origin}/flash-report.html?mode=view&bu=${BU_PARAM}&week=${WEEK_PARAM}`;
+      const subject = encodeURIComponent(`Flash Report — ${buName} — ${WEEK_PARAM}`);
+      const body = encodeURIComponent(`Hi,\n\nThe Flash Report for ${buName} (${WEEK_PARAM}) has been published.\n\nView here:\n${reportUrl}\n\nRegards,\n${user}`);
+      window.open(`mailto:?subject=${subject}&body=${body}`, '_self');
     } else {
       document.getElementById('autosave-txt').textContent = '✓ Rascunho salvo';
     }
