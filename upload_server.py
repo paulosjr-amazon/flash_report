@@ -204,7 +204,10 @@ def index():
 
 @app.post("/upload")
 async def upload(file: UploadFile = File(...), slot: str = Form("header-logo")):
-    if file.content_type not in ALLOWED_TYPES:
+    is_data_slot = slot.startswith("data-")
+    if is_data_slot:
+        pass  # accept any file type for data slots
+    elif file.content_type not in ALLOWED_TYPES:
         raise HTTPException(400, "Tipo não permitido. Use PNG, JPG, SVG ou WEBP.")
     if slot not in SLOTS:
         raise HTTPException(400, "Slot inválido.")
@@ -303,6 +306,14 @@ def get_weeks():
     return {"weeks": sorted(states.keys(), reverse=True)}
 
 
+def _fmt_date(d):
+    """Convert 2026-05-14 to May 14"""
+    from datetime import datetime as _dt
+    try:
+        return _dt.strptime(d, '%Y-%m-%d').strftime('%b %d').replace(' 0', ' ')
+    except:
+        return d
+
 # ── Dynamic Tables by BU ─────────────────────────────────────────────────────
 
 @app.get("/api/tables")
@@ -351,8 +362,8 @@ def get_tables(bu: str = "BR"):
                 'site': r.get('Site',''),
                 'bu': BU_MAP.get(r.get('OBR BU','').strip(), r.get('OBR BU','')),
                 'risk': (r.get('Risk Category','') or '—')[:40],
-                'date': r.get('Incident Date','')[:10],
-                'desc': r.get('Description','')
+                'date': _fmt_date(r.get('Incident Date','')[:10]),
+                'desc': r.get('Description','')[:250]
             })
 
     # Critical Observations
@@ -389,10 +400,38 @@ def get_tables(bu: str = "BR"):
                 'observer': r.get('Submitter Login',''),
                 'category': cat,
                 'sev_css': sev_css,
-                'date': r.get('Finding Creation Timestamp (UTC)','')[:10],
+                'date': _fmt_date(r.get('Finding Creation Timestamp (UTC)','')[:10]),
                 'days': r['_days'],
-                'obs': r.get('Safety Observation','')
+                'obs': r.get('Safety Observation','')[:250]
             })
+
+    # Translate and summarize descriptions to English
+    if CLAUDE_API_KEY and (nm_results or crit_results):
+        try:
+            all_descs = [r['desc'] for r in nm_results] + [r['obs'] for r in crit_results]
+            batch = '\n---\n'.join(f'[{i}] {t}' for i,t in enumerate(all_descs) if t)
+            client = anthropic.Anthropic(api_key=CLAUDE_API_KEY)
+            resp = client.messages.create(
+                model="claude-haiku-4-5",
+                max_tokens=3000,
+                messages=[{"role": "user", "content": f"Translate and summarize each numbered safety observation below from Portuguese to English. Make each ONE clear sentence (max 25 words). Keep numbering. Output only translations:\n\n{batch}"}]
+            )
+            lines = resp.content[0].text.strip().split('\n')
+            translations = {}
+            for line in lines:
+                line = line.strip()
+                if line.startswith('['):
+                    try:
+                        idx = int(line[1:line.index(']')])
+                        translations[idx] = line[line.index(']')+1:].strip()
+                    except: pass
+            for i, r in enumerate(nm_results):
+                if i in translations: r['desc'] = translations[i]
+            nm_len = len(nm_results)
+            for i, r in enumerate(crit_results):
+                if (nm_len + i) in translations: r['obs'] = translations[nm_len + i]
+        except Exception as e:
+            pass  # keep originals if translation fails
 
     return {"near_miss": nm_results, "critical_obs": crit_results, "bu": bu, "week": "20"}
 
@@ -418,9 +457,11 @@ def recalculate_report():
     rows = list(csv.DictReader(open(FLASH_CSV, encoding='utf-8-sig')))
 
     # Detect latest week
+    # Filter to 2026 only
+    rows = [r for r in rows if r.get('Year','') == '2026']
     weeks = sorted(set(r['Week'] for r in rows if r.get('Week','')))
     if not weeks:
-        raise HTTPException(400, "No week data found in CSV.")
+        raise HTTPException(400, "No week data found in CSV for 2026.")
     latest_week = weeks[-1]
     week_rows = [r for r in rows if r['Week'] == latest_week]
 
@@ -556,32 +597,72 @@ async def generate_snap(req: SnapRequest):
 async def generate_insights(req: InsightsRequest):
     client = anthropic.Anthropic(api_key=CLAUDE_API_KEY)
 
-    metrics_text = "\n".join(
-        f"- {k}: Week={v.get('week','?')}  YTD={v.get('ytd','?')}"
-        for k, v in req.metrics.items()
-    )
+    import json as _json
+    goals_file = ASSETS_DIR.parent / "goals.json"
+    goals = {}
+    bu_goal_key = {"Brazil Operations": "LATAMCF", "Fulfillment Centers": "LATAMCF", "Sort Centers": "ATS-LATAM", "Logistics": "AMZL-LATAM"}.get(req.bu, "LATAMCF")
+    if goals_file.exists():
+        all_goals = _json.loads(goals_file.read_text())
+        goals = all_goals.get(bu_goal_key, {})
 
-    prompt = f"""You are a WHS (Workplace Health & Safety) analyst for Amazon BRAZIL Operations ONLY.
-IMPORTANT: All analysis must be about Amazon Brazil. Do NOT reference global data, other countries, or worldwide metrics.
+    # Map metric labels to goal keys
+    METRIC_GOAL_MAP = {
+        "Serious Incident Rate": ("SIR", "lower_better"),
+        "Recordable Incident Rate": ("RIR", "lower_better"),
+        "Lost Time Incident Rate": ("LTIR", "lower_better"),
+        "First Aid Rate": ("FAIR", "lower_better"),
+        "Dragonfly Rate": (None, "lower_better"),
+        "Dragonfly Closure Rate": ("DFY_Closure", "higher_better"),
+        "Inspection OTC": ("Inspection_OTC", "higher_better"),
+        "Near Miss": (None, "lower_better"),
+    }
 
-Business Unit: {req.bu} (Amazon Brazil)
-Section: {req.section.upper()} metrics
+    # Pre-classify metrics as good or bad using Python logic (not AI)
+    highlights_data = []
+    lowlights_data = []
+    for metric_name, vals in req.metrics.items():
+        ytd_str = str(vals.get('ytd','')).replace('%','').replace(',','.')
+        try: ytd_val = float(ytd_str)
+        except: continue
+        week_str = str(vals.get('week','')).replace('%','').replace(',','.')
+        try: week_val = float(week_str)
+        except: week_val = ytd_val
 
-Weekly data for this BU in Brazil:
-{metrics_text}
+        goal_key, logic = METRIC_GOAL_MAP.get(metric_name, (None, None))
+        if not goal_key or goal_key not in goals: continue
+        goal_val = goals[goal_key]["goal"]
 
-Generate exactly:
-1. Three bullet points for HIGHLIGHTS (positive results, improvements, achievements for THIS BU in Brazil)
-2. Three bullet points for LOWLIGHTS (concerns, areas needing attention for THIS BU in Brazil)
+        if logic == "lower_better":
+            if ytd_val <= goal_val:
+                highlights_data.append(f"{metric_name}: YTD={ytd_str} vs Goal={goal_val} (MEETING goal)")
+            else:
+                lowlights_data.append(f"{metric_name}: YTD={ytd_str} vs Goal={goal_val} (MISSING goal by {((ytd_val-goal_val)/goal_val*100):.0f}%)")
+        else:  # higher_better
+            if ytd_val >= goal_val:
+                highlights_data.append(f"{metric_name}: YTD={ytd_str}% vs Goal={goal_val}% (MEETING goal)")
+            else:
+                lowlights_data.append(f"{metric_name}: YTD={ytd_str}% vs Goal={goal_val}% (MISSING goal, gap of {(goal_val-ytd_val):.1f}pp)")
 
-Rules:
-- Each bullet is one concise sentence (max 20 words)
-- Reference specific metrics and numbers from the data provided above
-- Be objective and operational in tone
-- Context is ONLY Amazon Brazil operations — use Brazilian site codes (GRU, CNF, REC, DSP, etc)
-- No markdown, no asterisks, just plain text bullets starting with a dash
+    hl_text = "\n".join(f"- {h}" for h in highlights_data) or "- Zero incidents recorded this week — strong safety performance"
+    ll_text = "\n".join(f"- {l}" for l in lowlights_data) or "- All metrics within target range"
 
-Format your response as:
+    prompt = f"""Rewrite safety metrics into short professional bullets for Amazon {req.bu} Brazil.
+
+HIGHLIGHTS (POSITIVE — metrics that MEET or BEAT goals):
+{hl_text}
+
+LOWLIGHTS (NEGATIVE — metrics that MISS goals):
+{ll_text}
+
+STRICT RULES:
+1. HIGHLIGHTS must sound POSITIVE: use words like "achieved", "met target", "zero incidents", "strong performance"
+2. LOWLIGHTS must sound NEGATIVE: use words like "above target", "missed goal", "requires action", "gap of"
+3. Include the actual number AND the goal in each bullet
+4. DO NOT put positive language in lowlights or negative language in highlights
+5. Max 18 words per bullet
+6. If a category has fewer than 3 items, add operational context (e.g. "Zero LTI events recorded this week")
+
+Format exactly:
 HIGHLIGHTS:
 - ...
 - ...
