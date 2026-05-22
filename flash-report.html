@@ -125,7 +125,7 @@ body{
 .lang-bar{display:flex;justify-content:flex-end;padding:.4rem 2.5rem;padding-right:calc(2.5rem + 15px)}
 .lang-btn{background:#f5f5f5;border:1px solid #e0e0e0;border-radius:8px;padding:.3rem .7rem;color:#555;font-size:.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:.3rem;transition:.15s}
 .lang-btn:hover{background:#e8e8e8;color:#1a1a1a}
-.admin-only{display:none}
+.admin-only{display:flex}
 
 .page-body{padding:2rem 0;position:relative}
 .page-content{margin-left:2.5rem;margin-right:2.5rem;position:relative}
@@ -382,6 +382,7 @@ body{
   </div>
 
   <div class="lang-bar">
+    <button class="lang-btn" onclick="document.getElementById('bu-modal').style.display='flex'" title="Select BU">📋 BU</button>
     <button class="lang-btn" id="lang-btn" onclick="toggleLang()" title="Change language">🌐 <span id="lang-label">EN</span></button>
     <button class="lang-btn admin-only" id="admin-btn" onclick="openAdmin()" title="Admin" style="margin-left:.5rem">⚙️ Admin</button>
   </div>
@@ -533,7 +534,7 @@ body{
       <div class="hl-block hl-good">
         <div class="hl-header">
           <div class="hl-title">Highlights</div>
-          <button class="hl-ai-btn" onclick="generateInsights('events-insights','highlights','Brazil Operations','events')">✨ Generate</button>
+          <button class="hl-ai-btn" onclick="generateInsights('events-insights','highlights',BU_LABELS[BU_PARAM]||'Brazil Operations','events')">✨ Generate</button>
         </div>
         <ul class="hl-list" id="events-insights-highlights">
           <li contenteditable="true" data-editable data-field="ev_hl_0">Click ✨ Generate to fill with AI insights, or type here.</li>
@@ -544,7 +545,7 @@ body{
       <div class="hl-block hl-bad">
         <div class="hl-header">
           <div class="hl-title">Lowlights</div>
-          <button class="hl-ai-btn" onclick="generateInsights('events-insights','lowlights','Brazil Operations','events')">✨ Generate</button>
+          <button class="hl-ai-btn" onclick="generateInsights('events-insights','lowlights',BU_LABELS[BU_PARAM]||'Brazil Operations','events')">✨ Generate</button>
         </div>
         <ul class="hl-list" id="events-insights-lowlights">
           <li contenteditable="true" data-editable data-field="ev_ll_0">Click ✨ Generate to fill with AI insights, or type here.</li>
@@ -644,7 +645,7 @@ body{
       <div class="hl-block hl-good">
         <div class="hl-header">
           <div class="hl-title">Highlights</div>
-          <button class="hl-ai-btn" onclick="generateInsights('barriers-insights','highlights','Brazil Operations','barriers')">✨ Generate</button>
+          <button class="hl-ai-btn" onclick="generateInsights('barriers-insights','highlights',BU_LABELS[BU_PARAM]||'Brazil Operations','barriers')">✨ Generate</button>
         </div>
         <ul class="hl-list" id="barriers-insights-highlights">
           <li contenteditable="true" data-editable data-field="bar_hl_0">Click ✨ Generate to fill with AI insights, or type here.</li>
@@ -655,7 +656,7 @@ body{
       <div class="hl-block hl-bad">
         <div class="hl-header">
           <div class="hl-title">Lowlights</div>
-          <button class="hl-ai-btn" onclick="generateInsights('barriers-insights','lowlights','Brazil Operations','barriers')">✨ Generate</button>
+          <button class="hl-ai-btn" onclick="generateInsights('barriers-insights','lowlights',BU_LABELS[BU_PARAM]||'Brazil Operations','barriers')">✨ Generate</button>
         </div>
         <ul class="hl-list" id="barriers-insights-lowlights">
           <li contenteditable="true" data-editable data-field="bar_ll_0">Click ✨ Generate to fill with AI insights, or type here.</li>
@@ -686,18 +687,7 @@ body{
   <div class="page-subheader">Flash Report — WHS Brazil<span class="sub-right">Week 2026-W20 · v1.0 · paulosjr</span></div>
   <div class="page-body"><div class="page-content">
     <span class="pill">Near Miss</span>
-    <div class="crit-table-wrap"><table class="crit-table"><thead><tr><th>Site</th><th>BU</th><th>Risk Category</th><th>Date</th><th>Description</th></tr></thead><tbody>
-<tr><td><strong>ELP8</strong></td><td>Logistics</td><td><span class="sev-badge sev-PENDING" style="font-size:.55rem">Chemical management / Hazardous material</span></td><td style="white-space:nowrap">2026-05-14</td><td>While handling remaining packages on the shuttle, the associate noticed that a package was wet with an unidentified liquid during transfer to the conveyor belt. The substance on the package surface contacted her left hand, penetrating the protective glove and directly hitting the thumb. Immediately after contact, the associate reported burning sensation and itching on the left thumb, indicating possible irritative reaction caused by the substance on the package.</td></tr>
-<tr><td><strong>DBS5</strong></td><td>Logistics</td><td><span class="sev-badge sev-PENDING" style="font-size:.55rem">Chemical management / Hazardous material</span></td><td style="white-space:nowrap">2026-05-16</td><td>The associate was picking when grabbing a package and noticed it was leaking. He took the package to REPACK for associate Clara. Two minutes later, he felt his hand tingling.</td></tr>
-<tr><td><strong>GIG1</strong></td><td>FC</td><td><span class="sev-badge sev-PENDING" style="font-size:.55rem">Chemical management / Hazardous material</span></td><td style="white-space:nowrap">2026-05-17</td><td>Associate suffered allergic reaction on left thumb with itching symptom after handling tote contaminated with chemical product without using chemical gloves before starting activities.</td></tr>
-<tr><td><strong>GRU5</strong></td><td>FC</td><td><span class="sev-badge sev-PENDING" style="font-size:.55rem">Fall Hazard (Gravity)</span></td><td style="white-space:nowrap">2026-05-11</td><td>Associate reported being in the transfer-in storage process when she hit her hand on a bottle, and the bottle fell on her right foot.</td></tr>
-<tr><td><strong>GRU5</strong></td><td>FC</td><td><span class="sev-badge sev-PENDING" style="font-size:.55rem">Fall Hazard (Gravity)</span></td><td style="white-space:nowrap">2026-05-11</td><td>The associate was in the transfer-in process, attempted to avoid the Verzani cart obstructing a lane entrance, and ended up hitting the cart against a shuttle, causing totes to fall to the floor.</td></tr>
-<tr><td><strong>POA1</strong></td><td>FC</td><td><span class="sev-badge sev-PENDING" style="font-size:.55rem">Fall Hazard (Gravity)</span></td><td style="white-space:nowrap">2026-05-11</td><td>Associate was entering the corridor with the acrylic TS, did not notice spilled liquid on the floor, slipped and leaned on the acrylic TS, forcing the right knee.</td></tr>
-<tr><td><strong>GIG1</strong></td><td>FC</td><td><span class="sev-badge sev-PENDING" style="font-size:.55rem">Fall Hazard (Gravity)</span></td><td style="white-space:nowrap">2026-05-12</td><td>After the associate finished processing the rebin cart and directed it to the demarcation area, the acrylic located on the rear of the cart unexpectedly detached and fell.</td></tr>
-<tr><td><strong>GIG1</strong></td><td>FC</td><td><span class="sev-badge sev-PENDING" style="font-size:.55rem">Fall Hazard (Gravity)</span></td><td style="white-space:nowrap">2026-05-12</td><td>Pack station with unstable table and risk of tipping due to missing nuts on the 4 table bolts.</td></tr>
-<tr><td><strong>GIG1</strong></td><td>FC</td><td><span class="sev-badge sev-PENDING" style="font-size:.55rem">Fall Hazard (Gravity)</span></td><td style="white-space:nowrap">2026-05-12</td><td>Associate was positioning rebin cart in buffer when a champagne bottle slipped from the cart and fell to the floor, breaking.</td></tr>
-<tr><td><strong>GIG1</strong></td><td>FC</td><td><span class="sev-badge sev-PENDING" style="font-size:.55rem">Fall Hazard (Gravity)</span></td><td style="white-space:nowrap">2026-05-12</td><td>During handling, the box lid opened and the glass bottle fell to the floor, breaking.</td></tr>
-    </tbody></table></div>
+    <div class="crit-table-wrap"><table class="crit-table"><thead><tr><th>Site</th><th>BU</th><th>Risk Category</th><th>Date</th><th>Description</th></tr></thead><tbody id="nm-tbody"></tbody></table></div>
   </div></div>
   <div class="footer">
     <div class="footer-left"><div class="footer-icon"><img src="https://ds-akyj2d5n--3003.us-east-1.prod.proxy.devspaces.amazon.dev/assets/footer-logo.png" style="height:48px;max-width:160px;object-fit:contain" onerror="this.style.display='none'"></div></div>
@@ -711,17 +701,7 @@ body{
   <div class="page-subheader">Flash Report — WHS Brazil<span class="sub-right">Week 2026-W20 · v1.0 · paulosjr</span></div>
   <div class="page-body"><div class="page-content">
     <span class="pill">Critical Observations</span>
-    <div class="crit-table-wrap"><table class="crit-table"><thead><tr><th>Site / BU</th><th>Observer</th><th style="width:80px">Category</th><th>Opened</th><th>Days</th><th>Observation</th></tr></thead><tbody>
-<tr><td style="white-space:nowrap"><strong>DES2</strong><br><span style="font-size:.6rem;color:#999">Logistics</span></td><td style="font-size:.65rem">@migormma</td><td style="width:80px"><span class="sev-badge sev-A" style="font-size:.5rem;line-height:1.2;display:inline-block;white-space:normal">Chemical Handling/Storage</span></td><td style="white-space:nowrap;font-size:.65rem">2026-05-11</td><td style="text-align:center"><span style="font-size:.7rem;font-weight:800;color:#c62828">14d</span></td><td style="font-size:.65rem;line-height:1.35">WHS Team, I request attention to the suspension case of Ypê products (detergents, disinfectants, etc.) with lot endings "1" by ANVISA, which exposes serious sanitary control failures and possible contamination by Pseudomonas aeruginosa, a bacterium associated with severe infections, sepsis and high mortality in vulnerable patients. This case reinforces real public health risks and raises questions about quality standards adopted by the manufacturer. The purpose of this report is to ensure we are not using this type of product in our operations. [References provided]</td></tr>
-<tr><td style="white-space:nowrap"><strong>DRJ5</strong><br><span style="font-size:.6rem;color:#999">Logistics</span></td><td style="font-size:.65rem">@migormma</td><td style="width:80px"><span class="sev-badge sev-A" style="font-size:.5rem;line-height:1.2;display:inline-block;white-space:normal">Chemical Handling/Storage</span></td><td style="white-space:nowrap;font-size:.65rem">2026-05-11</td><td style="text-align:center"><span style="font-size:.7rem;font-weight:800;color:#c62828">14d</span></td><td style="font-size:.65rem;line-height:1.35">WHS Team, I request attention to the suspension case of Ypê products (detergents, disinfectants, etc.) with lot endings "1" by ANVISA, which exposes serious sanitary control failures and possible contamination by Pseudomonas aeruginosa, a bacterium associated with severe infections, sepsis and high mortality in vulnerable patients. This case reinforces real public health risks and raises questions about quality standards adopted by the manufacturer. The purpose of this report is to ensure we are not using this type of product in our operations. [References provided]</td></tr>
-<tr><td style="white-space:nowrap"><strong>GRU9</strong><br><span style="font-size:.6rem;color:#999">FC</span></td><td style="font-size:.65rem">@silvimay</td><td style="width:80px"><span class="sev-badge sev-A" style="font-size:.5rem;line-height:1.2;display:inline-block;white-space:normal">Electrical</span></td><td style="white-space:nowrap;font-size:.65rem">2026-05-12</td><td style="text-align:center"><span style="font-size:.7rem;font-weight:800;color:#c62828">13d</span></td><td style="font-size:.65rem;line-height:1.35">Good morning! Until the last shift at the junction of line 6 conveyor belts and others, in the GAP area, some packages fall from the conveyor onto an unprotected part of the equipment with exposed wires. The concern is attempting to retrieve them with a Jampole and accidentally pulling wires or exposing them, potentially causing electric shock. Thank you.</td></tr>
-<tr><td style="white-space:nowrap"><strong>REC1</strong><br><span style="font-size:.6rem;color:#999">FC</span></td><td style="font-size:.65rem">@andandev</td><td style="width:80px"><span class="sev-badge sev-A" style="font-size:.5rem;line-height:1.2;display:inline-block;white-space:normal">Electrical</span></td><td style="white-space:nowrap;font-size:.65rem">2026-05-12</td><td style="text-align:center"><span style="font-size:.7rem;font-weight:800;color:#c62828">13d</span></td><td style="font-size:.65rem;line-height:1.35">Tension wire on the DOCK conveyor is constantly catching on items, causing conveyor jam and potentially damaging the cable, creating electric shock risk to personnel. Note: Wire located near stairs, in front of PS.</td></tr>
-<tr><td style="white-space:nowrap"><strong>GRU5</strong><br><span style="font-size:.6rem;color:#999">FC</span></td><td style="font-size:.65rem">@ybsantos</td><td style="width:80px"><span class="sev-badge sev-A" style="font-size:.5rem;line-height:1.2;display:inline-block;white-space:normal">Falling From/Working at Heights</span></td><td style="white-space:nowrap;font-size:.65rem">2026-05-13</td><td style="text-align:center"><span style="font-size:.7rem;font-weight:800;color:#c62828">12d</span></td><td style="font-size:.65rem;line-height:1.35">Situation: During operational inspection, stairs were identified as unstable during use. Task: Ensure safe equipment usage conditions to prevent fall and accident risks for associates. Action: Condition was reported for evaluation and maintenance of stairs, and team was instructed not to use equipment until unsafe condition is resolved. Result: Preventive action contributed to accident risk reduction and ensures greater safety for associates during operational activities. Completed.</td></tr>
-<tr><td style="white-space:nowrap"><strong>CNF1</strong><br><span style="font-size:.6rem;color:#999">FC</span></td><td style="font-size:.65rem">@celly</td><td style="width:80px"><span class="sev-badge sev-A" style="font-size:.5rem;line-height:1.2;display:inline-block;white-space:normal">Falling From/Working at Heights</span></td><td style="white-space:nowrap;font-size:.65rem">2026-05-13</td><td style="text-align:center"><span style="font-size:.7rem;font-weight:800;color:#c62828">12d</span></td><td style="font-size:.65rem;line-height:1.35">During shift on 13/05/2026, a ship's ladder (providing access to blue boxes) was identified as non-standard (handrail only until ladder ascent begins), leaving it without low anchor point and presenting risk to users.</td></tr>
-<tr><td style="white-space:nowrap"><strong>ELP8</strong><br><span style="font-size:.6rem;color:#999">Logistics</span></td><td style="font-size:.65rem">@mendesot</td><td style="width:80px"><span class="sev-badge sev-B" style="font-size:.5rem;line-height:1.2;display:inline-block;white-space:normal">Trailer Dock Release (TDR)</span></td><td style="white-space:nowrap;font-size:.65rem">2026-05-11</td><td style="text-align:center"><span style="font-size:.7rem;font-weight:800;color:#c62828">14d</span></td><td style="font-size:.65rem;line-height:1.35">Docks 02, 03, 04, 05, and 06 are experiencing difficulty opening dock doors as they are rising with force, creating risk of serious accident.</td></tr>
-<tr><td style="white-space:nowrap"><strong>REC3</strong><br><span style="font-size:.6rem;color:#999">FC</span></td><td style="font-size:.65rem">@kdelimjo</td><td style="width:80px"><span class="sev-badge sev-B" style="font-size:.5rem;line-height:1.2;display:inline-block;white-space:normal">Emergency Preparedness</span></td><td style="white-space:nowrap;font-size:.65rem">2026-05-13</td><td style="text-align:center"><span style="font-size:.7rem;font-weight:800;color:#c62828">12d</span></td><td style="font-size:.65rem;line-height:1.35">I have major safety concern regarding the VNA lanes in the pit area; in case of accident or an associate falling ill between one emergency corridor and another, since there are only two and the distance between them is quite long with no space for a medic to pass beside the machine due to narrow width, how would rescue be conducted? Has any simulation or test been performed in this area?</td></tr>
-<tr><td style="white-space:nowrap"><strong>DBR9</strong><br><span style="font-size:.6rem;color:#999">Logistics</span></td><td style="font-size:.65rem">@afgustav</td><td style="width:80px"><span class="sev-badge sev-C" style="font-size:.5rem;line-height:1.2;display:inline-block;white-space:normal">Parking Lot</span></td><td style="white-space:nowrap;font-size:.65rem">2026-05-15</td><td style="text-align:center"><span style="font-size:.7rem;font-weight:800;color:#c62828">10d</span></td><td style="font-size:.65rem;line-height:1.35">At TOM yard, the last lane providing access to Nave A had no cone, so drivers had free access to the area. Recently, an associate attempted to cross the pedestrian lane and because there was no cone, the driver did not stop the vehicle and nearly caused an accident! Proposal - Place two cones on the last lane!</td></tr>
-    </tbody></table></div>
+    <div class="crit-table-wrap"><table class="crit-table"><thead><tr><th>Site / BU</th><th>Observer</th><th style="width:80px">Category</th><th>Opened</th><th>Days</th><th>Observation</th></tr></thead><tbody id="crit-tbody"></tbody></table></div>
   </div></div>
   <div class="footer">
     <div class="footer-left"><div class="footer-icon"><img src="https://ds-akyj2d5n--3003.us-east-1.prod.proxy.devspaces.amazon.dev/assets/footer-logo.png" style="height:48px;max-width:160px;object-fit:contain" onerror="this.style.display='none'"></div></div>
@@ -812,6 +792,36 @@ async function saveReport(status) {
 }
 
 // Init mode — run after DOM is ready
+// ── Dynamic Tables ──────────────────────────────────────────────────────────
+async function loadTables(bu) {
+  const buParam = bu || BU_PARAM || 'BR';
+  try {
+    const res = await fetch(`${API_BASE}/api/tables?bu=${buParam}`);
+    const data = await res.json();
+    const nmTbody = document.getElementById('nm-tbody');
+    if (nmTbody) {
+      if (!data.near_miss.length) {
+        nmTbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#aaa;padding:1.5rem;font-style:italic">No near miss events for this BU this week</td></tr>';
+      } else {
+        nmTbody.innerHTML = data.near_miss.map(r =>
+          `<tr><td><strong>${r.site}</strong></td><td>${r.bu}</td><td><span class="sev-badge sev-PENDING" style="font-size:.55rem">${r.risk}</span></td><td style="white-space:nowrap">${r.date}</td><td>${r.desc}</td></tr>`
+        ).join('');
+      }
+    }
+    const critTbody = document.getElementById('crit-tbody');
+    if (critTbody) {
+      if (!data.critical_obs.length) {
+        critTbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#aaa;padding:1.5rem;font-style:italic">No critical observations for this BU this week</td></tr>';
+      } else {
+        critTbody.innerHTML = data.critical_obs.map(r => {
+          const col = r.days>=7?'#c62828':r.days>=4?'#f57f17':'#2e7d32';
+          return `<tr><td style="white-space:nowrap"><strong>${r.site}</strong><br><span style="font-size:.6rem;color:#999">${r.bu}</span></td><td style="font-size:.65rem">@${r.observer}</td><td style="width:80px"><span class="sev-badge ${r.sev_css}" style="font-size:.5rem;line-height:1.2;display:inline-block;white-space:normal">${r.category}</span></td><td style="white-space:nowrap;font-size:.65rem">${r.date}</td><td style="text-align:center"><span style="font-size:.7rem;font-weight:800;color:${col}">${r.days}d</span></td><td style="font-size:.65rem;line-height:1.35">${r.obs}</td></tr>`;
+        }).join('');
+      }
+    }
+  } catch(e) { console.error('loadTables:', e); }
+}
+
 // ── Admin access ────────────────────────────────────────────────────────────
 const ADMIN_PASS = 'whs2026';
 let adminUnlocked = false;
@@ -901,6 +911,9 @@ document.addEventListener('DOMContentLoaded', function initMode() {
     headerSub.textContent = `${w} · ${year}`;
   }
 
+  // Load dynamic tables
+  loadTables(BU_PARAM);
+
   if (MODE === 'edit') {
     document.body.classList.add('edit-mode');
     if (!BU_PARAM) {
@@ -929,11 +942,15 @@ document.addEventListener('DOMContentLoaded', function initMode() {
 });
 
 // ── Snapshot AI ──────────────────────────────────────────────────────────────
-const SNAP_PROMPTS = {
-  did_you_know:     'Write ONE short impactful fact (1-2 sentences, max 30 words) about workplace safety relevant to Amazon Brazil Operations. Focus on a data point or insight that motivates safety engagement. Plain text only.',
-  success_stories:  'Write ONE brief success story (1-2 sentences, max 35 words) about a safety improvement at a fictional Amazon Brazil FC/SC/DSP site this week. Include site code, metric improvement, and root cause. Plain text only.',
-  hot_flag:         'Write ONE safety hot flag alert (1-2 sentences, max 30 words) about a recurring safety risk in Amazon Brazil Operations this week. Include incident type, frequency, and recommended action. Start with the risk name in bold using <strong>. Use HTML bold only.',
-};
+function getSnapPrompt(field) {
+  const bu = BU_LABELS[BU_PARAM] || 'Brazil Operations';
+  const prompts = {
+    did_you_know: `Write ONE short impactful fact (1-2 sentences, max 30 words) about workplace safety ONLY for Amazon ${bu} in BRAZIL. Use real Brazilian site codes (GRU, CNF, REC, DSP, etc). Focus on a data point that motivates safety engagement. Plain text only. Do NOT mention other countries or global data.`,
+    success_stories: `Write ONE brief success story (1-2 sentences, max 35 words) about a safety improvement at a fictional Amazon ${bu} site in BRAZIL this week. Use Brazilian site codes. Include site code, metric improvement, and root cause. Plain text only.`,
+    hot_flag: `Write ONE safety hot flag alert (1-2 sentences, max 30 words) about a recurring safety risk in Amazon ${bu} in BRAZIL this week. Use Brazilian context only. Include incident type, frequency, and recommended action. Start with the risk name in bold using <strong>. Use HTML bold only.`,
+  };
+  return prompts[field] || '';
+}
 
 async function generateSnap(field, btn) {
   btn.disabled = true;
@@ -942,7 +959,7 @@ async function generateSnap(field, btn) {
     const res = await fetch(`${API_BASE}/api/snap`, {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ field, prompt: SNAP_PROMPTS[field] })
+      body: JSON.stringify({ field, prompt: getSnapPrompt(field) })
     });
     const data = await res.json();
     const el = document.querySelector(`[data-field="${field}"]`);

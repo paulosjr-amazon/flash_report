@@ -1,0 +1,29 @@
+{
+  "LATAMCF": {
+    "FAIR": {"goal": 20.69, "logic": "lower_better"},
+    "RIR": {"goal": 0.01, "logic": "lower_better"},
+    "LTIR": {"goal": 34.15, "logic": "lower_better"},
+    "SIR": {"goal": 0.01, "logic": "lower_better"},
+    "Inspection_OTC": {"goal": 98, "logic": "higher_better"},
+    "Task_OTC": {"goal": 98, "logic": "higher_better"},
+    "DFY_Closure": {"goal": 98, "logic": "higher_better"}
+  },
+  "AMZL-LATAM": {
+    "FAIR": {"goal": 11.75, "logic": "lower_better"},
+    "RIR": {"goal": 0.14, "logic": "lower_better"},
+    "LTIR": {"goal": 11.20, "logic": "lower_better"},
+    "SIR": {"goal": 0.14, "logic": "lower_better"},
+    "Inspection_OTC": {"goal": 98, "logic": "higher_better"},
+    "Task_OTC": {"goal": 98, "logic": "higher_better"},
+    "DFY_Closure": {"goal": 98, "logic": "higher_better"}
+  },
+  "ATS-LATAM": {
+    "FAIR": {"goal": 30.00, "logic": "lower_better"},
+    "RIR": {"goal": 0.03, "logic": "lower_better"},
+    "LTIR": {"goal": 50.51, "logic": "lower_better"},
+    "SIR": {"goal": 0.03, "logic": "lower_better"},
+    "Inspection_OTC": {"goal": 98, "logic": "higher_better"},
+    "Task_OTC": {"goal": 98, "logic": "higher_better"},
+    "DFY_Closure": {"goal": 98, "logic": "higher_better"}
+  }
+}

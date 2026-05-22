@@ -303,6 +303,100 @@ def get_weeks():
     return {"weeks": sorted(states.keys(), reverse=True)}
 
 
+# ── Dynamic Tables by BU ─────────────────────────────────────────────────────
+
+@app.get("/api/tables")
+def get_tables(bu: str = "BR"):
+    import csv
+    from collections import defaultdict
+    from datetime import datetime as dt
+
+    DATA_DIR = ASSETS_DIR.parent / "data"
+    BU_MAP_REV = {'BR': None, 'FC': 'LATAMCF', 'SC': 'ATS-LATAM', 'LOG': 'AMZL-LATAM'}
+    BU_MAP = {'LATAMCF': 'FC', 'ATS-LATAM': 'SC', 'AMZL-LATAM': 'Logistics'}
+    CAT_SEV = {
+        'Falling From/Working at Heights': ('A','sev-A'),
+        'Electrical': ('A','sev-A'),
+        'Chemical Handling/Storage': ('A','sev-A'),
+        'Power Industrial Trucks (PIT)': ('B','sev-B'),
+        'Trailer Dock Release (TDR)': ('B','sev-B'),
+        'Emergency Preparedness': ('B','sev-B'),
+        'Product Storage/Falling Object': ('C','sev-C'),
+        'Slip/Trip/Fall': ('C','sev-C'),
+        'Parking Lot': ('C','sev-C'),
+        'Ergonomics': ('D','sev-D'),
+        '5S/Housekeeping': ('D','sev-D'),
+        'Carts/Cages': ('D','sev-D'),
+    }
+    SEV_ORDER = {'A':0,'B':1,'C':2,'D':3,'E':4}
+    RISK_ORDER = {'Chemical management / Hazardous materials':0,'Chemical (liquid/solid/gas)':0,'Fall Hazard (Gravity)':1,'Materials/Objects & Equipment/Mechanical':2,'Ergonomics':3,'Psychosocial':4}
+    REPORT_DATE = dt(2026, 5, 25)
+    W20_START = '2026-05-11'
+    W20_END = '2026-05-17'
+
+    bu_filter = BU_MAP_REV.get(bu)
+
+    # Near Miss
+    nm_results = []
+    nm_file = DATA_DIR / "data-incidents.csv"
+    if nm_file.exists():
+        inc = list(csv.DictReader(open(nm_file, encoding='utf-8-sig')))
+        nm_rows = [r for r in inc if r.get('Near Miss Incident Ind','0')=='1'
+                   and W20_START <= r.get('Incident Date','')[:10] <= W20_END]
+        if bu_filter:
+            nm_rows = [r for r in nm_rows if r.get('OBR BU','').strip() == bu_filter]
+        nm_rows.sort(key=lambda r: (RISK_ORDER.get(r.get('Risk Category','').strip(),9), r.get('Incident Date','')))
+        for r in nm_rows[:10]:
+            nm_results.append({
+                'site': r.get('Site',''),
+                'bu': BU_MAP.get(r.get('OBR BU','').strip(), r.get('OBR BU','')),
+                'risk': (r.get('Risk Category','') or '—')[:40],
+                'date': r.get('Incident Date','')[:10],
+                'desc': r.get('Description','')
+            })
+
+    # Critical Observations
+    crit_results = []
+    dfy_file = DATA_DIR / "data-dragonfly.csv"
+    if dfy_file.exists():
+        dfy = list(csv.DictReader(open(dfy_file, encoding='utf-8-sig')))
+        week20 = [r for r in dfy if W20_START <= r.get('Finding Creation Timestamp (UTC)','')[:10] <= W20_END]
+        major = [r for r in week20 if r.get('Severity (AI)','')=='4' and r.get('Closure Status','').strip()=='Open']
+        if bu_filter:
+            major = [r for r in major if r.get('OBR BU','').strip() == bu_filter]
+
+        for r in major:
+            date_str = r.get('Finding Creation Timestamp (UTC)','')[:10]
+            try: r['_days'] = (REPORT_DATE - dt.strptime(date_str, '%Y-%m-%d')).days
+            except: r['_days'] = 0
+            r['_sev_order'] = SEV_ORDER.get(CAT_SEV.get(r.get('Category (AI)',''), ('E',''))[0], 9)
+
+        by_site = defaultdict(list)
+        for r in major:
+            by_site[r.get('Site','')].append(r)
+        top_per_site = []
+        for site, rows in by_site.items():
+            rows.sort(key=lambda r: (r['_sev_order'], -r['_days']))
+            top_per_site.append(rows[0])
+        top_per_site.sort(key=lambda r: (r['_sev_order'], -r['_days']))
+
+        for r in top_per_site:
+            cat = r.get('Category (AI)','—')
+            _, sev_css = CAT_SEV.get(cat, ('C','sev-C'))
+            crit_results.append({
+                'site': r.get('Site',''),
+                'bu': BU_MAP.get(r.get('OBR BU','').strip(), r.get('OBR BU','')),
+                'observer': r.get('Submitter Login',''),
+                'category': cat,
+                'sev_css': sev_css,
+                'date': r.get('Finding Creation Timestamp (UTC)','')[:10],
+                'days': r['_days'],
+                'obs': r.get('Safety Observation','')
+            })
+
+    return {"near_miss": nm_results, "critical_obs": crit_results, "bu": bu, "week": "20"}
+
+
 # ── Recalculate Flash Report ──────────────────────────────────────────────────
 
 @app.post("/api/recalc")
@@ -467,22 +561,24 @@ async def generate_insights(req: InsightsRequest):
         for k, v in req.metrics.items()
     )
 
-    prompt = f"""You are a WHS (Workplace Health & Safety) analyst for Amazon Brazil Operations.
+    prompt = f"""You are a WHS (Workplace Health & Safety) analyst for Amazon BRAZIL Operations ONLY.
+IMPORTANT: All analysis must be about Amazon Brazil. Do NOT reference global data, other countries, or worldwide metrics.
 
-Business Unit: {req.bu}
+Business Unit: {req.bu} (Amazon Brazil)
 Section: {req.section.upper()} metrics
 
-Weekly data:
+Weekly data for this BU in Brazil:
 {metrics_text}
 
 Generate exactly:
-1. Three bullet points for HIGHLIGHTS (positive results, improvements, achievements)
-2. Three bullet points for LOWLIGHTS (concerns, areas needing attention, below-target metrics)
+1. Three bullet points for HIGHLIGHTS (positive results, improvements, achievements for THIS BU in Brazil)
+2. Three bullet points for LOWLIGHTS (concerns, areas needing attention for THIS BU in Brazil)
 
 Rules:
 - Each bullet is one concise sentence (max 20 words)
-- Reference specific metrics and numbers from the data
+- Reference specific metrics and numbers from the data provided above
 - Be objective and operational in tone
+- Context is ONLY Amazon Brazil operations — use Brazilian site codes (GRU, CNF, REC, DSP, etc)
 - No markdown, no asterisks, just plain text bullets starting with a dash
 
 Format your response as:
