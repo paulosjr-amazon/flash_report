@@ -4,3 +4,5 @@ flash-report-app/backend/__pycache__/
 .env
 flash_report_sample.csv
 manual_input.csv
+data/data-inspections.csv
+data/header-logo.csv

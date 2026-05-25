@@ -8,6 +8,11 @@
 @font-face{font-family:'Amazon Ember';src:local('Amazon Ember Display Heavy');font-weight:900}
 @font-face{font-family:'Amazon Ember';src:local('Amazon Ember');font-weight:400}
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;900&display=swap');
+</style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+<style>
 
 :root{
     --green:#4CAF50;
@@ -198,7 +203,8 @@ body{
 .metric-row{display:flex;align-items:flex-end;gap:8px;flex:1}
 .metric-week-block{display:flex;flex-direction:column;gap:2px;flex:1}
 .metric-week-lbl{font-size:.55rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:rgba(50,90,30,0.55)}
-.metric-wk{font-size:2.1rem;font-weight:800;line-height:1;letter-spacing:-0.03em;color:#1a1a1a}
+.metric-wk{font-size:1.7rem;font-weight:800;line-height:1;letter-spacing:-0.03em;color:#1a1a1a}
+.metric-wk.compact{font-size:1.3rem}
 .metric-divider{width:1px;height:36px;background:rgba(80,120,50,0.2);flex-shrink:0}
 .metric-ytd-block{display:flex;flex-direction:column;gap:2px;align-items:flex-start;margin-bottom:2px;width:52px;flex-shrink:0}
 .metric-ytd-lbl{font-size:.55rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:rgba(50,90,30,0.4)}
@@ -256,7 +262,7 @@ body{
 /* ── Critical Events Table ── */
 .crit-table-wrap{border-radius:14px;overflow:hidden;box-shadow:var(--shadow);border:1px solid #eee}
 .crit-table{width:100%;border-collapse:collapse;font-size:.75rem}
-.crit-table thead tr{background:linear-gradient(135deg,#3a3a3a,#4a4a4a)}
+.crit-table thead tr{background:linear-gradient(135deg,#3D3D3D,#555555,#686868)}
 .crit-table thead th{color:#fff;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:.6rem .9rem;text-align:left;font-size:.62rem}
 .crit-table tbody tr{border-bottom:1px solid #f0f0f0}
 .crit-table tbody tr:last-child{border-bottom:none}
@@ -297,6 +303,24 @@ body{
 .footer-cta-txt{font-size:.75rem;color:#999;font-style:italic}
 .footer-go{background:linear-gradient(135deg,#8FD44F,#A8D8A8);color:#2d4a1e;border:none;border-radius:999px;padding:.3rem 1.1rem;font-weight:800;font-size:.8rem;cursor:pointer;letter-spacing:.04em;font-family:'Amazon Ember','Inter',sans-serif}
 .page-num{font-size:.7rem;color:#aaa;font-weight:500;letter-spacing:.03em}
+
+/* ── Scorecard Table ── */
+.sc-table{width:100%;border-collapse:collapse;font-size:.65rem}
+.sc-table thead tr{background:linear-gradient(135deg,#3D3D3D,#555555,#686868)}
+.sc-table thead th{color:#fff;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:.5rem .4rem;text-align:center;font-size:.55rem;white-space:nowrap}
+.sc-table thead th:first-child{text-align:left;padding-left:.8rem}
+.sc-table tbody tr{border-bottom:1px solid #f0f0f0}
+.sc-table tbody tr:hover{background:#fafafa}
+.sc-table td{padding:.4rem .4rem;text-align:center;vertical-align:middle}
+.sc-table td:first-child{text-align:left;padding-left:.8rem;font-weight:700}
+.sc-cell{display:inline-block;padding:.15rem .4rem;border-radius:6px;font-weight:700;font-size:.6rem;min-width:38px}
+.sc-met{background:#e8f5e9;color:#2e7d32}
+.sc-close{background:#fff8e1;color:#f57f17}
+.sc-miss{background:#fde8e8;color:#c62828}
+.sc-na{background:#f5f5f5;color:#999}
+.sc-bu{font-size:.55rem;color:#999;font-weight:400;display:block}
+
+.map-container{width:100%;height:500px;border-radius:14px;overflow:hidden;border:1px solid #eee}
 
 @media print{
     body{padding:0;background:#fff}
@@ -407,61 +431,13 @@ body{
         </div>
       </div>
 
-      <!-- RIGHT: Best Dragonfly -->
+      <!-- RIGHT: Best Dragonfly (dynamic) -->
       <div>
         <div class="dfy-top-row">
           <span class="pill" style="margin-bottom:0">Best Dragonfly</span>
-          <span style="font-size:.7rem;color:#bbb" id="dfy-week-label">Top observations · W20</span>
+          <span style="font-size:.7rem;color:#bbb" id="dfy-week-label">Top observations</span>
         </div>
-
-        <!-- 🏆 Melhor Brasil — DSP3 (Logistics, 11 obs — melhor geral) -->
-        <div class="dfy-card">
-          <div class="dfy-meta">
-            <span style="font-size:.6rem;font-weight:800;background:#8FD44F;color:#2d4a1e;padding:.2rem .7rem;border-radius:999px;letter-spacing:.04em">🏆 Best Brazil</span>
-            <span class="dfy-type" style="background:transparent;border:1.5px solid #8FD44F;color:#3d6b2a">Logistics</span>
-            <span class="dfy-site">DSP3</span><span class="dfy-dot">·</span>
-            <span class="dfy-login">@abarros</span><span class="dfy-dot">·</span>
-            <span class="dfy-obs">✍️ 11 obs.</span>
-            <span class="dfy-date">May 17</span>
-          </div>
-          <div class="dfy-body">Spotted improperly secured cargo in yard truck before road transport, eliminating road safety risk before departure.</div>
-        </div>
-
-        <!-- Best FC (GRU5, 8 obs) -->
-        <div class="dfy-card">
-          <div class="dfy-meta">
-            <span class="dfy-type" style="background:transparent;border:1.5px solid #8FD44F;color:#3d6b2a">Fulfillment Center</span>
-            <span class="dfy-site">GRU5</span><span class="dfy-dot">·</span>
-            <span class="dfy-login">@jsilva</span><span class="dfy-dot">·</span>
-            <span class="dfy-obs">✍️ 8 obs.</span>
-            <span class="dfy-date">May 19</span>
-          </div>
-          <div class="dfy-body">Proactively identified hydraulic fluid leak on forklift during pre-trip inspection, preventing equipment failure and potential injury before shift start.</div>
-        </div>
-
-        <!-- Best SC (CGH3, 3 obs) -->
-        <div class="dfy-card">
-          <div class="dfy-meta">
-            <span class="dfy-type" style="background:transparent;border:1.5px solid #8FD44F;color:#3d6b2a">Sort Center</span>
-            <span class="dfy-site">CGH3</span><span class="dfy-dot">·</span>
-            <span class="dfy-login">@rcoelho</span><span class="dfy-dot">·</span>
-            <span class="dfy-obs">✍️ 3 obs.</span>
-            <span class="dfy-date">May 20</span>
-          </div>
-          <div class="dfy-body">Identified broken dock leveler latch and raised emergency work order, avoiding potential fall-from-height event during unload operations.</div>
-        </div>
-
-        <!-- Best Logistics 2nd (DSP3 já é Best Brazil — entra CNF1 como runner-up Logistics) -->
-        <div class="dfy-card">
-          <div class="dfy-meta">
-            <span class="dfy-type" style="background:transparent;border:1.5px solid #8FD44F;color:#3d6b2a">Logistics</span>
-            <span class="dfy-site">DSP2</span><span class="dfy-dot">·</span>
-            <span class="dfy-login">@cmendes</span><span class="dfy-dot">·</span>
-            <span class="dfy-obs">✍️ 7 obs.</span>
-            <span class="dfy-date">May 19</span>
-          </div>
-          <div class="dfy-body">Flagged missing reflective vest usage during night unload at staging area. Corrective action issued and PPE restocked within 30 minutes.</div>
-        </div>
+        <div id="dfy-cards"></div>
       </div>
 
     </div>
@@ -472,10 +448,10 @@ body{
       <div class="footer-icon"><img src="https://ds-akyj2d5n--3003.us-east-1.prod.proxy.devspaces.amazon.dev/assets/footer-logo.png" style="height:48px;max-width:160px;object-fit:contain" onerror="this.style.display='none'"></div>
       
     </div>
-        <span class="page-num">1 / 5</span>
+        <span class="page-num">1 / 6</span>
 <div class="footer-cta" style="justify-content:flex-end">
-      <span class="footer-cta-txt">Have you done your deep dive today?</span>
-      <button class="footer-go">Go!</button>
+      <span class="footer-cta-txt" style="font-size:.6rem;color:#bbb;font-style:normal">Powered by <strong style="color:#8FD44F">AIRA</strong> | Amazon Risk Intelligence Agent - WHS Brazil</span>
+      
     </div>
   </div>
 </div>
@@ -484,7 +460,7 @@ body{
 <div class="page">
   <div class="page-subheader">
     Flash Report — WHS Brazil
-    <span class="sub-right">Week 2026-W20 · v1.0 · paulosjr</span>
+    <span class="sub-right">Week 2026-W21 · v1.0 · paulosjr</span>
   </div>
 
   <div class="page-body"><div class="page-content">
@@ -494,26 +470,26 @@ body{
 
       <div class="metrics-col hl">
         <div class="col-head hl">Brazil Operations</div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Serious Incident Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">0.00</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.00</div></div></div></div></div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Recordable Incident Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">0.00</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.08</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Serious Incident Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">0.51</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.02</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Recordable Incident Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">0.51</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.10</div></div></div></div></div>
         <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Lost Time Incident Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">0.00</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.05</div></div></div></div></div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">First Aid Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">11.05</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">16.13</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">First Aid Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">9.60</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">16.01</div></div></div></div></div>
       </div>
 
       <div class="metrics-col fc">
         <div class="col-head fc">Fulfillment Centers</div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟡</text></svg><div class="metric-card"><div class="metric-lbl">Serious Incident Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">0.00</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.00</div></div></div></div></div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟡</text></svg><div class="metric-card"><div class="metric-lbl">Recordable Incident Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">0.00</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.07</div></div></div></div></div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟡</text></svg><div class="metric-card"><div class="metric-lbl">Lost Time Incident Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">0.00</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.04</div></div></div></div></div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟡</text></svg><div class="metric-card"><div class="metric-lbl">First Aid Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">15.90</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">16.90</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟡</text></svg><div class="metric-card"><div class="metric-lbl">Serious Incident Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">0.72</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.03</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟡</text></svg><div class="metric-card"><div class="metric-lbl">Recordable Incident Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">0.72</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.10</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟡</text></svg><div class="metric-card"><div class="metric-lbl">Lost Time Incident Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">0.00</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.03</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟡</text></svg><div class="metric-card"><div class="metric-lbl">First Aid Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">10.13</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">16.79</div></div></div></div></div>
       </div>
 
       <div class="metrics-col sc">
         <div class="col-head sc">Sort Centers</div>
         <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Serious Incident Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">0.00</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.00</div></div></div></div></div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Recordable Incident Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">0.00</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.23</div></div></div></div></div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Lost Time Incident Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">0.00</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.23</div></div></div></div></div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">First Aid Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">0.00</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">24.45</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Recordable Incident Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">0.00</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.22</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Lost Time Incident Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">0.00</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.22</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">First Aid Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">14.47</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">24.44</div></div></div></div></div>
       </div>
 
       <div class="metrics-col log">
@@ -521,7 +497,7 @@ body{
         <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🔴</text></svg><div class="metric-card"><div class="metric-lbl">Serious Incident Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">0.00</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.00</div></div></div></div></div>
         <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🔴</text></svg><div class="metric-card"><div class="metric-lbl">Recordable Incident Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">0.00</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.00</div></div></div></div></div>
         <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🔴</text></svg><div class="metric-card"><div class="metric-lbl">Lost Time Incident Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">0.00</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">0.00</div></div></div></div></div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🔴</text></svg><div class="metric-card"><div class="metric-lbl">First Aid Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">0.00</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">8.18</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🔴</text></svg><div class="metric-card"><div class="metric-lbl">First Aid Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">5.14</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">8.03</div></div></div></div></div>
       </div>
 
     </div>
@@ -562,18 +538,14 @@ body{
       <table class="crit-table">
         <thead>
           <tr>
-            <th>Site</th>
-            <th>BU</th>
+            <th>Site / BU</th>
             <th>Type</th>
             <th>SEV</th>
-            <th>Date</th>
+            <th>Week</th>
             <th>Description</th>
-            
           </tr>
         </thead>
-        <tbody>
-          <tr><td colspan="6" style="text-align:center;color:#aaa;padding:1.5rem;font-style:italic">No critical events (A/B/C) recorded this week</td></tr>
-        </tbody>
+        <tbody id="evt-tbody"></tbody>
       </table>
     </div>
 
@@ -584,10 +556,10 @@ body{
       <div class="footer-icon"><img src="https://ds-akyj2d5n--3003.us-east-1.prod.proxy.devspaces.amazon.dev/assets/footer-logo.png" style="height:48px;max-width:160px;object-fit:contain" onerror="this.style.display='none'"></div>
       
     </div>
-        <span class="page-num">2 / 5</span>
+        <span class="page-num">2 / 6</span>
 <div class="footer-cta" style="justify-content:flex-end">
-      <span class="footer-cta-txt">Have you done your deep dive today?</span>
-      <button class="footer-go">Go!</button>
+      <span class="footer-cta-txt" style="font-size:.6rem;color:#bbb;font-style:normal">Powered by <strong style="color:#8FD44F">AIRA</strong> | Amazon Risk Intelligence Agent - WHS Brazil</span>
+      
     </div>
   </div>
 </div>
@@ -596,7 +568,7 @@ body{
 <div class="page">
   <div class="page-subheader">
     Flash Report — WHS Brazil
-    <span class="sub-right">Week 2026-W20 · v1.0 · paulosjr</span>
+    <span class="sub-right">Week 2026-W21 · v1.0 · paulosjr</span>
   </div>
 
   <div class="page-body"><div class="page-content">
@@ -606,34 +578,38 @@ body{
 
       <div class="metrics-col hl">
         <div class="col-head hl">Brazil Operations</div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Dragonfly Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">256.2</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">240.2</div></div></div></div></div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Dragonfly Closure Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">22.6%</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">84.8%</div></div></div></div></div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Inspection OTC</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">56.4%</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">23.0%</div></div></div></div></div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Near Miss</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">40.5</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">35.6</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Dragonfly Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">299.2</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">241.9</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Dragonfly OTC</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">98.5%</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">97.5%</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Inspection OTC</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">99.6%</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">98.7%</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Actions OTC</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">97.3%</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">99.0%</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Near Miss</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">80</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">1476</div></div></div></div></div>
       </div>
 
       <div class="metrics-col fc">
         <div class="col-head fc">Fulfillment Centers</div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Dragonfly Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">286.2</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">267.9</div></div></div></div></div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Dragonfly Closure Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">26.7%</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">86.1%</div></div></div></div></div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Inspection OTC</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">50.3%</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">20.4%</div></div></div></div></div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Near Miss</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">47.7</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">39.6</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Dragonfly Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">343.7</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">270.5</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Dragonfly OTC</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">98.2%</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">97.7%</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Inspection OTC</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">100.0%</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">98.8%</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Actions OTC</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">99.8%</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">99.3%</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Near Miss</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">67</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">1156</div></div></div></div></div>
       </div>
 
       <div class="metrics-col sc">
         <div class="col-head sc">Sort Centers</div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Dragonfly Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">137.2</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">203.7</div></div></div></div></div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Dragonfly Closure Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">14.3%</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">83.1%</div></div></div></div></div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Inspection OTC</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">84.0%</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">34.5%</div></div></div></div></div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Near Miss</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">29.4</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">40.6</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Dragonfly Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">183.3</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">200.6</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Dragonfly OTC</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">100.0%</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">98.1%</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Inspection OTC</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">100.0%</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">98.9%</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Actions OTC</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">97.5%</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">97.3%</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Near Miss</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">7</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">185</div></div></div></div></div>
       </div>
 
       <div class="metrics-col log">
         <div class="col-head log">Logistics</div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟡</text></svg><div class="metric-card"><div class="metric-lbl">Dragonfly Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">215.5</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">156.6</div></div></div></div></div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟡</text></svg><div class="metric-card"><div class="metric-lbl">Dragonfly Closure Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">6.2%</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">77.9%</div></div></div></div></div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟡</text></svg><div class="metric-card"><div class="metric-lbl">Inspection OTC</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">61.4%</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">26.1%</div></div></div></div></div>
-        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟡</text></svg><div class="metric-card"><div class="metric-lbl">Near Miss</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">21.3</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">17.6</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟡</text></svg><div class="metric-card"><div class="metric-lbl">Dragonfly Rate</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">203.0</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">158.2</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟡</text></svg><div class="metric-card"><div class="metric-lbl">Dragonfly OTC</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">100.0%</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">96.0%</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟡</text></svg><div class="metric-card"><div class="metric-lbl">Inspection OTC</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">99.4%</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">98.4%</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟢</text></svg><div class="metric-card"><div class="metric-lbl">Actions OTC</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">95.8%</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">97.2%</div></div></div></div></div>
+        <div class="metric-card-wrap"><svg class="metric-card-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path class="metric-card-svg-fill" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><path class="metric-card-svg-stroke" d="M 10 0 H 76 C 82 0,82.5 7,83 11 C 84 20,90 25,95 25 C 99 25,100 31,100 38 V 90 Q 100 100,90 100 H 10 Q 0 100,0 90 V 10 Q 0 0,10 0 Z"/><text x="97" y="10" font-size="10" text-anchor="middle" dominant-baseline="central">🟡</text></svg><div class="metric-card"><div class="metric-lbl">Near Miss</div><div class="metric-row"><div class="metric-week-block"><div class="metric-week-lbl">Week</div><div class="metric-wk">6</div></div><div class="metric-divider"></div><div class="metric-ytd-block"><div class="metric-ytd-lbl">YTD</div><div class="metric-ytd-val">135</div></div></div></div></div>
       </div>
 
     </div>
@@ -672,10 +648,10 @@ body{
     <div class="footer-left">
       <div class="footer-icon"><img src="https://ds-akyj2d5n--3003.us-east-1.prod.proxy.devspaces.amazon.dev/assets/footer-logo.png" style="height:48px;max-width:160px;object-fit:contain" onerror="this.style.display='none'"></div>
     </div>
-        <span class="page-num">3 / 5</span>
+        <span class="page-num">3 / 6</span>
 <div class="footer-cta" style="justify-content:flex-end">
-      <span class="footer-cta-txt">Have you done your deep dive today?</span>
-      <button class="footer-go">Go!</button>
+      <span class="footer-cta-txt" style="font-size:.6rem;color:#bbb;font-style:normal">Powered by <strong style="color:#8FD44F">AIRA</strong> | Amazon Risk Intelligence Agent - WHS Brazil</span>
+      
     </div>
   </div>
 </div>
@@ -683,31 +659,61 @@ body{
 
 <!-- ═══════ PAGE 4 — NEAR MISS ═══════ -->
 <div class="page">
-  <div class="page-subheader">Flash Report — WHS Brazil<span class="sub-right">Week 2026-W20 · v1.0 · paulosjr</span></div>
+  <div class="page-subheader">Flash Report — WHS Brazil<span class="sub-right">Week 2026-W21 · v1.0 · paulosjr</span></div>
   <div class="page-body"><div class="page-content">
-    <span class="pill">Near Miss</span>
-    <div class="crit-table-wrap"><table class="crit-table"><thead><tr><th>Site</th><th>BU</th><th>Category</th><th>Date</th><th>Description</th></tr></thead><tbody id="nm-tbody"></tbody></table></div>
+    <span class="pill">Flagged Near Miss</span>
+    <div class="crit-table-wrap"><table class="crit-table"><thead><tr><th>Site / BU</th><th>Category</th><th>Date</th><th>Description</th></tr></thead><tbody id="nm-tbody"></tbody></table></div>
   </div></div>
   <div class="footer">
     <div class="footer-left"><div class="footer-icon"><img src="https://ds-akyj2d5n--3003.us-east-1.prod.proxy.devspaces.amazon.dev/assets/footer-logo.png" style="height:48px;max-width:160px;object-fit:contain" onerror="this.style.display='none'"></div></div>
-    <span class="page-num">4 / 5</span>
-    <div class="footer-cta" style="justify-content:flex-end"><span class="footer-cta-txt">Have you done your deep dive today?</span><button class="footer-go">Go!</button></div>
+    <span class="page-num">4 / 6</span>
+    <div class="footer-cta" style="justify-content:flex-end"><span class="footer-cta-txt" style="font-size:.6rem;color:#bbb;font-style:normal">Powered by <strong style="color:#8FD44F">AIRA</strong> | Amazon Risk Intelligence Agent - WHS Brazil</span></div>
   </div>
 </div>
 
 <!-- ═══════ PAGE 5 — CRITICAL OBS ═══════ -->
 <div class="page">
-  <div class="page-subheader">Flash Report — WHS Brazil<span class="sub-right">Week 2026-W20 · v1.0 · paulosjr</span></div>
+  <div class="page-subheader">Flash Report — WHS Brazil<span class="sub-right">Week 2026-W21 · v1.0 · paulosjr</span></div>
   <div class="page-body"><div class="page-content">
-    <span class="pill">Critical Observations</span>
+    <span class="pill">Flagged Observations</span>
     <div class="crit-table-wrap"><table class="crit-table"><thead><tr><th>Site / BU</th><th>Observer</th><th style="width:80px">Category</th><th>Opened</th><th>Days</th><th>Observation</th></tr></thead><tbody id="crit-tbody"></tbody></table></div>
   </div></div>
   <div class="footer">
     <div class="footer-left"><div class="footer-icon"><img src="https://ds-akyj2d5n--3003.us-east-1.prod.proxy.devspaces.amazon.dev/assets/footer-logo.png" style="height:48px;max-width:160px;object-fit:contain" onerror="this.style.display='none'"></div></div>
-    <span class="page-num">5 / 5</span>
-    <div class="footer-cta" style="justify-content:flex-end"><span class="footer-cta-txt">Have you done your deep dive today?</span><button class="footer-go">Go!</button></div>
+    <span class="page-num">5 / 6</span>
+    <div class="footer-cta" style="justify-content:flex-end"><span class="footer-cta-txt" style="font-size:.6rem;color:#bbb;font-style:normal">Powered by <strong style="color:#8FD44F">AIRA</strong> | Amazon Risk Intelligence Agent - WHS Brazil</span></div>
   </div>
 </div>
+
+<!-- ═══════ PAGE 6 — SITE SCORECARD ═══════ -->
+<div class="page">
+  <div class="page-subheader">Flash Report — WHS Brazil<span class="sub-right" id="scorecard-week-label">Week 2026-W21</span></div>
+  <div class="page-body"><div class="page-content">
+    <span class="pill">Site Scorecard</span>
+    <div id="scorecard-table" style="margin-top:1rem"></div>
+  </div></div>
+  <div class="footer">
+    <div class="footer-left"><div class="footer-icon"><img src="/assets/footer-logo.png" style="height:48px;max-width:160px;object-fit:contain" onerror="this.style.display='none'"></div></div>
+    <span class="page-num">6 / 6</span>
+    <div class="footer-cta" style="justify-content:flex-end"><span class="footer-cta-txt" style="font-size:.6rem;color:#bbb;font-style:normal">Powered by <strong style="color:#8FD44F">AIRA</strong> | Amazon Risk Intelligence Agent - WHS Brazil</span></div>
+  </div>
+</div>
+
+<!-- ═══════ PAGE 7 — RISK HEAT MAP ═══════ -->
+<!-- HEATMAP ON HOLD
+<div class="page">
+  <div class="page-subheader">Flash Report — WHS Brazil<span class="sub-right">Week 2026-W21 · v1.0 · paulosjr</span></div>
+  <div class="page-body"><div class="page-content">
+    <span class="pill">Risk Heat Map</span>
+    <div id="risk-map" class="map-container" style="margin-top:1rem"></div>
+  </div></div>
+  <div class="footer">
+    <div class="footer-left"><div class="footer-icon"><img src="/assets/footer-logo.png" style="height:48px;max-width:160px;object-fit:contain" onerror="this.style.display='none'"></div></div>
+    <span class="page-num">7 / 7</span>
+    <div class="footer-cta" style="justify-content:flex-end"><span class="footer-cta-txt" style="font-size:.6rem;color:#bbb;font-style:normal">Powered by <strong style="color:#8FD44F">AIRA</strong> | Amazon Risk Intelligence Agent - WHS Brazil</span></div>
+  </div>
+</div>
+HEATMAP ON HOLD -->
 
 </div>
 
@@ -795,6 +801,131 @@ async function saveReport(status) {
   }
 }
 
+// ── Site Scorecard ──────────────────────────────────────────────────────────
+// ── Best Dragonfly (dynamic) ────────────────────────────────────────────────
+async function loadBestDragonfly() {
+  const container = document.getElementById('dfy-cards');
+  const label = document.getElementById('dfy-week-label');
+  if (!container) return;
+  const buParam = BU_PARAM ? `&bu=${BU_PARAM}` : '';
+  try {
+    const res = await fetch(`${API_BASE}/api/best-dragonfly?week=${WEEK_PARAM}${buParam}`);
+    const data = await res.json();
+    if (label) label.textContent = `Top observations · ${WEEK_PARAM}`;
+    if (!data.items || !data.items.length) {
+      container.innerHTML = '<div style="color:#aaa;font-size:.75rem;padding:1rem;text-align:center;font-style:italic">No dragonfly data for this week</div>';
+      return;
+    }
+    container.innerHTML = data.items.map(item => {
+      const badge = item.badge
+        ? `<span style="font-size:.6rem;font-weight:800;background:#8FD44F;color:#2d4a1e;padding:.2rem .7rem;border-radius:999px;letter-spacing:.04em">🏆 ${item.badge}</span>`
+        : '';
+      const fmtDate = item.date ? new Date(item.date+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '';
+      const obsText = item.observation ? `<div class="dfy-body">${item.observation}</div>` : '';
+      return `<div class="dfy-card">
+        <div class="dfy-meta">
+          ${badge}
+          <span class="dfy-type" style="background:transparent;border:1.5px solid #8FD44F;color:#3d6b2a">${item.bu_label}</span>
+          <span class="dfy-site">${item.site}</span><span class="dfy-dot">·</span>
+          <span class="dfy-login">@${item.login}</span><span class="dfy-dot">·</span>
+          <span class="dfy-obs">✍️ ${item.obs_count} obs.</span>
+          <span class="dfy-date">${fmtDate}</span>
+        </div>
+        ${obsText}
+      </div>`;
+    }).join('');
+  } catch(e) {
+    container.innerHTML = '<div style="color:#c62828;font-size:.7rem;padding:1rem">Error loading dragonfly data</div>';
+  }
+}
+
+async function loadScorecard() {
+  const container = document.getElementById('scorecard-table');
+  if (!container) return;
+  try {
+    const res = await fetch(`${API_BASE}/api/site-scorecard?bu=${BU_PARAM||''}`);
+    const data = await res.json();
+    if (!data.sites || !data.sites.length) {
+      container.innerHTML = '<div style="color:#aaa;text-align:center;padding:2rem;font-style:italic">No data available</div>';
+      return;
+    }
+    const label = document.getElementById('scorecard-week-label');
+    if (label) label.textContent = `Week 2026-W${data.week} · v1.0`;
+
+    const statusCls = (s) => s === 'met' ? 'sc-met' : s === 'close' ? 'sc-close' : s === 'miss' ? 'sc-miss' : 'sc-na';
+    const fmtVal = (v) => v === 0 ? '0.00' : v.toFixed(2);
+
+    let html = `<table class="sc-table"><thead><tr>
+      <th>Site</th><th>HHT</th><th>SIR</th><th>RIR</th><th>LTIR</th><th>FAIR</th><th>NM</th><th>DFY</th><th>DFY OTC</th><th>INS OTC</th><th>ACT OTC</th>
+    </tr></thead><tbody>`;
+
+    const fmtPct = (v) => v === 0 ? '0.0' : v.toFixed(1);
+
+    data.sites.forEach(s => {
+      html += `<tr>
+        <td>${s.site}<span class="sc-bu">${s.bu}</span></td>
+        <td style="font-size:.6rem;color:#555">${s.hht > 0 ? (s.hht/1000).toFixed(1)+'K' : '—'}</td>
+        <td><span class="sc-cell ${statusCls(s.sir.status)}">${fmtVal(s.sir.val)}</span></td>
+        <td><span class="sc-cell ${statusCls(s.rir.status)}">${fmtVal(s.rir.val)}</span></td>
+        <td><span class="sc-cell ${statusCls(s.ltir.status)}">${fmtVal(s.ltir.val)}</span></td>
+        <td><span class="sc-cell ${statusCls(s.fair.status)}">${fmtVal(s.fair.val)}</span></td>
+        <td><span class="sc-cell sc-na">${s.nm}</span></td>
+        <td><span class="sc-cell sc-na">${s.dfy}</span></td>
+        <td><span class="sc-cell ${statusCls(s.dfy_otc.status)}">${fmtPct(s.dfy_otc.val)}</span></td>
+        <td><span class="sc-cell ${statusCls(s.insp_otc.status)}">${fmtPct(s.insp_otc.val)}</span></td>
+        <td><span class="sc-cell ${statusCls(s.act_otc.status)}">${fmtPct(s.act_otc.val)}</span></td>
+      </tr>`;
+    });
+
+    html += '</tbody></table>';
+    container.innerHTML = html;
+  } catch(e) {
+    container.innerHTML = '<div style="color:#c62828;font-size:.7rem;padding:1rem">Error loading scorecard</div>';
+  }
+}
+
+// ── Risk Heat Map ──────────────────────────────────────────────────────────
+async function loadRiskMap() {
+  const container = document.getElementById('risk-map');
+  if (!container) return;
+  try {
+    const map = L.map('risk-map').setView([-15.0, -50.0], 4);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap &copy; CARTO',
+      subdomains: 'abcd',
+      maxZoom: 19
+    }).addTo(map);
+
+    // Fetch heatmap data (severity-weighted points from incidents + dragonfly)
+    const res = await fetch(`${API_BASE}/api/heatmap?bu=${BU_PARAM||''}`);
+    const data = await res.json();
+
+    if (data.points && data.points.length) {
+      L.heatLayer(data.points, {
+        radius: 35,
+        blur: 25,
+        maxZoom: 10,
+        max: 10,
+        gradient: {0.2: '#8FD44F', 0.5: '#FFC107', 0.8: '#FF6F00', 1.0: '#e53935'}
+      }).addTo(map);
+    }
+
+    // Also add small site markers for reference
+    const scRes = await fetch(`${API_BASE}/api/site-scorecard?bu=${BU_PARAM||''}`);
+    const scData = await scRes.json();
+    if (scData.sites) {
+      scData.sites.forEach(s => {
+        const lat = parseFloat(s.lat);
+        const lng = parseFloat(s.lng);
+        if (isNaN(lat) || isNaN(lng) || (lat === 0 && lng === 0)) return;
+        L.circleMarker([lat, lng], {
+          radius: 3, fillColor: '#fff', color: '#fff', weight: 1, opacity: 0.7, fillOpacity: 0.9
+        }).addTo(map).bindTooltip(s.site, {permanent: false, direction: 'top', className: 'site-tooltip'});
+      });
+    }
+  } catch(e) { console.error('loadRiskMap:', e); }
+}
+
 // Init mode — run after DOM is ready
 // ── Dynamic Tables ──────────────────────────────────────────────────────────
 async function loadTables(bu) {
@@ -805,10 +936,10 @@ async function loadTables(bu) {
     const nmTbody = document.getElementById('nm-tbody');
     if (nmTbody) {
       if (!data.near_miss.length) {
-        nmTbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#aaa;padding:1.5rem;font-style:italic">No near miss events for this BU this week</td></tr>';
+        nmTbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#aaa;padding:1.5rem;font-style:italic">No near miss events for this BU this week</td></tr>';
       } else {
         nmTbody.innerHTML = data.near_miss.map(r =>
-          `<tr><td><strong>${r.site}</strong></td><td>${r.bu}</td><td><span class="sev-badge sev-PENDING" style="font-size:.58rem;padding:.2rem .5rem;border-radius:4px;line-height:1.3;display:inline-block">${r.risk}</span></td><td style="white-space:nowrap">${r.date}</td><td>${r.desc}</td></tr>`
+          `<tr><td style="white-space:nowrap"><strong>${r.site}</strong><br><span style="font-size:.6rem;color:#999">${r.bu}</span></td><td><span class="sev-badge sev-PENDING" style="font-size:.58rem;padding:.2rem .5rem;border-radius:4px;line-height:1.3;display:inline-block">${r.risk}</span></td><td style="white-space:nowrap;font-size:.65rem">${r.date}</td><td style="font-size:.65rem;line-height:1.35">${r.desc}</td></tr>`
         ).join('');
       }
     }
@@ -819,7 +950,20 @@ async function loadTables(bu) {
       } else {
         critTbody.innerHTML = data.critical_obs.map(r => {
           const col = r.days>=7?'#c62828':r.days>=4?'#f57f17':'#2e7d32';
-          return `<tr><td style="white-space:nowrap"><strong>${r.site}</strong><br><span style="font-size:.6rem;color:#999">${r.bu}</span></td><td style="font-size:.58rem;white-space:nowrap;width:45px">@${r.observer}</td><td style="width:120px"><span class="sev-badge ${r.sev_css}" style="font-size:.58rem;padding:.2rem .5rem;border-radius:4px;line-height:1.3;display:inline-block;white-space:normal">${r.category}</span></td><td style="white-space:nowrap;font-size:.65rem">${r.date}</td><td style="text-align:center"><span style="font-size:.7rem;font-weight:800;color:${col}">${r.days}d</span></td><td style="font-size:.65rem;line-height:1.35">${r.obs}</td></tr>`;
+          return `<tr><td style="white-space:nowrap"><strong>${r.site}</strong><br><span style="font-size:.6rem;color:#999">${r.bu}</span></td><td style="font-size:.58rem;white-space:nowrap;width:45px">@${r.observer}</td><td style="width:120px"><span class="sev-badge sev-PENDING" style="font-size:.58rem;padding:.2rem .5rem;border-radius:4px;line-height:1.3;display:inline-block;white-space:normal">${r.category}</span></td><td style="white-space:nowrap;font-size:.65rem">${r.date}</td><td style="text-align:center"><span style="font-size:.7rem;font-weight:800;color:${col}">${r.days}d</span></td><td style="font-size:.65rem;line-height:1.35">${r.obs}</td></tr>`;
+        }).join('');
+      }
+    }
+    // Critical Events (SI/RI)
+    const evtTbody = document.getElementById('evt-tbody');
+    if (evtTbody) {
+      const events = data.critical_events || [];
+      if (!events.length) {
+        evtTbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#aaa;padding:1.5rem;font-style:italic">No critical events (SI/RI) recorded this week</td></tr>';
+      } else {
+        evtTbody.innerHTML = events.map(r => {
+          const sevCss = r.sev === 'A' ? 'sev-A' : 'sev-B';
+          return `<tr><td style="white-space:nowrap"><strong>${r.site}</strong><br><span style="font-size:.6rem;color:#999">${r.bu}</span></td><td><span class="sev-badge ${sevCss}" style="font-size:.58rem;padding:.2rem .5rem;border-radius:4px;line-height:1.3;display:inline-block">${r.type}</span></td><td style="font-size:.65rem;font-weight:700">${r.sev}</td><td style="font-size:.65rem">${r.date}</td><td style="font-size:.65rem;line-height:1.35">${r.desc}</td></tr>`;
         }).join('');
       }
     }
@@ -932,8 +1076,11 @@ document.addEventListener('DOMContentLoaded', function initMode() {
     headerSub.textContent = `${w} · ${year}`;
   }
 
-  // Load dynamic tables
+  // Load dynamic tables, scorecard, and risk map
   loadTables(BU_PARAM);
+  loadBestDragonfly();
+  loadScorecard();
+  loadRiskMap();
 
   if (MODE === 'edit') {
     document.body.classList.add('edit-mode');
@@ -985,14 +1132,55 @@ async function generateSnap(field, btn) {
     });
     const data = await res.json();
     const el = document.querySelector(`[data-field="${field}"]`);
-    if (el && data.text) el.innerHTML = data.text;
-    scheduleAutosave();
-    btn.textContent = '✓';
-    setTimeout(() => { btn.textContent = '✨'; btn.disabled = false; }, 2000);
+    if (el && data.options && data.options.length > 1) {
+      // Show options picker
+      showSnapOptions(field, el, data.options, btn);
+    } else if (el && data.text) {
+      el.innerHTML = data.text;
+      scheduleAutosave();
+      btn.textContent = '✓';
+      setTimeout(() => { btn.textContent = '✨'; btn.disabled = false; }, 2000);
+    }
   } catch(e) {
     btn.textContent = '✗';
     btn.disabled = false;
   }
+}
+
+function showSnapOptions(field, el, options, btn) {
+  // Remove existing picker
+  const existing = document.getElementById('snap-picker');
+  if (existing) existing.remove();
+
+  const picker = document.createElement('div');
+  picker.id = 'snap-picker';
+  picker.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:2500;display:flex;align-items:center;justify-content:center';
+  picker.innerHTML = `
+    <div style="background:#fff;border-radius:16px;padding:1.5rem;width:440px;box-shadow:0 12px 40px rgba(0,0,0,.2);max-height:80vh;overflow-y:auto">
+      <div style="font-size:.8rem;font-weight:800;margin-bottom:.75rem">Choose an option</div>
+      ${options.map((opt, i) => `
+        <div onclick="pickSnapOption('${field}', ${i})" style="padding:.7rem 1rem;border:1.5px solid #e8e8e8;border-radius:10px;margin-bottom:.5rem;cursor:pointer;font-size:.75rem;line-height:1.5;color:#444;transition:.12s"
+             onmouseover="this.style.borderColor='#8FD44F';this.style.background='#f4faf0'"
+             onmouseout="this.style.borderColor='#e8e8e8';this.style.background='#fff'">
+          ${opt}
+        </div>
+      `).join('')}
+      <button onclick="document.getElementById('snap-picker').remove();document.querySelector('[data-field=${field}]').closest('.snap-card').querySelector('.snap-ai-btn').disabled=false;document.querySelector('[data-field=${field}]').closest('.snap-card').querySelector('.snap-ai-btn').textContent='✨'" style="width:100%;padding:.4rem;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer;font-size:.72rem;font-weight:600;margin-top:.3rem;color:#888">Cancel</button>
+    </div>`;
+  picker._options = options;
+  picker._field = field;
+  document.body.appendChild(picker);
+  btn.textContent = '✨';
+  btn.disabled = false;
+}
+
+function pickSnapOption(field, idx) {
+  const picker = document.getElementById('snap-picker');
+  const opt = picker._options[idx];
+  const el = document.querySelector(`[data-field="${field}"]`);
+  if (el) el.innerHTML = opt;
+  picker.remove();
+  scheduleAutosave();
 }
 
 // ── AI Insights ────────────────────────────────────────────────────────────

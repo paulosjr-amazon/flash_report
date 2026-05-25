@@ -44,5 +44,29 @@
       "submitted_by": "paulosjr",
       "timestamp": "2026-05-22T19:43:28.238799+00:00"
     }
+  },
+  "2026-W20": {
+    "BR": {
+      "status": "published",
+      "content": {
+        "did_you_know": "Musculoskeletal disorders (MSDs) account for more than half of all recordable injuries at Amazon; MSD rate improved 43% over six years.",
+        "success_stories": "GRU5 — Completed 31,011 exposure hours with zero RI/LTI and 131 DFY observations.",
+        "hot_flag": "<strong>First Aid Incidents</strong> — GRU8: 7 FAI in Week 20.",
+        "ev_hl_0": "Serious Incident Rate: 0.00 YTD vs 0.01 goal — met target",
+        "ev_hl_1": "Recordable Incident Rate: 0.00 YTD vs 0.01 goal — met target",
+        "ev_hl_2": "Lost Time Incident Rate: 0.00 YTD vs 34.15 goal — met target",
+        "ev_ll_0": "No data",
+        "ev_ll_1": "",
+        "ev_ll_2": "",
+        "bar_hl_0": "Inspection OTC: 98.5% YTD vs 98% goal — met target",
+        "bar_hl_1": "",
+        "bar_hl_2": "",
+        "bar_ll_0": "Dragonfly OTC: 95.8% YTD vs 98% goal — missed by 2.2pp",
+        "bar_ll_1": "",
+        "bar_ll_2": ""
+      },
+      "submitted_by": "paulosjr",
+      "timestamp": "2026-05-23T21:51:10.409400+00:00"
+    }
   }
 }
